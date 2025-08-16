@@ -89,48 +89,48 @@
 ### Chunk 2.1: Basic Deduplication Engine
 
 #### Step 2.1.1: Duplicate Detection
-- [ ] Create `src/dedupe/engine.py`
-  - [ ] Implement `DeduplicationEngine` class
-  - [ ] Add ID-based duplicate detection
-  - [ ] Add email-based duplicate detection
-  - [ ] Create conflict resolution logic
-  - [ ] Handle simultaneous ID/email conflicts
-  - [ ] Build indexes for efficient lookups
-  - [ ] Add conflict type identification
-- [ ] Create `tests/test_engine.py`
-  - [ ] Test ID-based duplicate detection
-  - [ ] Test email-based duplicate detection
-  - [ ] Test simultaneous conflict detection
-  - [ ] Test index building efficiency
-  - [ ] Test conflict type identification
+- [x] Create `src/dedupe/engine.ts`
+  - [x] Implement `DeduplicationEngine` class
+  - [x] Add ID-based duplicate detection
+  - [x] Add email-based duplicate detection
+  - [x] Create conflict resolution logic
+  - [x] Handle simultaneous ID/email conflicts
+  - [x] Build indexes for efficient lookups
+  - [x] Add conflict type identification
+- [x] Create `tests/test_engine.ts`
+  - [x] Test ID-based duplicate detection
+  - [x] Test email-based duplicate detection
+  - [x] Test simultaneous conflict detection
+  - [x] Test index building efficiency
+  - [x] Test conflict type identification
 
 #### Step 2.1.2: Date-Based Resolution
-- [ ] Extend `DeduplicationEngine` class
-  - [ ] Implement newest date preference logic
-  - [ ] Handle identical dates (last in list preference)
-  - [ ] Create tie-breaking mechanisms
-  - [ ] Add date comparison utilities
-  - [ ] Implement record comparison logic
-- [ ] Add comprehensive tests
-  - [ ] Test date-based resolution scenarios
-  - [ ] Test identical date tie-breaking
-  - [ ] Test edge cases with identical dates
-  - [ ] Test record comparison accuracy
+- [x] Extend `DeduplicationEngine` class
+  - [x] Implement newest date preference logic
+  - [x] Handle identical dates (last in list preference)
+  - [x] Create tie-breaking mechanisms
+  - [x] Add date comparison utilities
+  - [x] Implement record comparison logic
+- [x] Add comprehensive tests
+  - [x] Test date-based resolution scenarios
+  - [x] Test identical date tie-breaking
+  - [x] Test edge cases with identical dates
+  - [x] Test record comparison accuracy
 
 ### Chunk 2.2: Conflict Resolution and Cross-Conflict Detection
 
 #### Step 2.2.1: Cross-Conflict Detection
-- [ ] Extend `DeduplicationEngine` class
-  - [ ] Detect records with both ID and email conflicts
-  - [ ] Implement error handling for cross-conflicts
-  - [ ] Create detailed error reporting for cross-conflicts
-  - [ ] Add cross-conflict validation logic
-  - [ ] Implement early exit for cross-conflicts
-- [ ] Add comprehensive tests
-  - [ ] Test cross-conflict detection
-  - [ ] Test cross-conflict error handling
-  - [ ] Test error message accuracy for cross-conflicts
-  - [ ] Test early exit behavior
+- [x] Extend `DeduplicationEngine` class
+  - [x] Detect records with both ID and email conflicts
+  - [x] Implement error handling for cross-conflicts
+  - [x] Create detailed error reporting for cross-conflicts
+  - [x] Add cross-conflict validation logic
+  - [x] Implement early exit for cross-conflicts
+- [x] Add comprehensive tests
+  - [x] Test cross-conflict detection
+  - [x] Test cross-conflict error handling
+  - [x] Test error message accuracy for cross-conflicts
+  - [x] Test early exit behavior
 
 #### Step 2.2.2: Record Merging Logic
 - [ ] Implement record merging functionality
