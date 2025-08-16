@@ -9,6 +9,7 @@ export { JsonParser, JsonData } from './parser';
 export { DateUtils, DateParseOptions, DateParseResult } from './utils';
 export { RecordValidator, ValidationConfig, ValidationError, ValidationSummary } from './validator';
 export { DeduplicationEngine, ConflictInfo, DeduplicationResult, MergeDecision } from './engine';
+export { ChangeLogger, LogEntry, ChangeLog, FieldChange } from './logger';
 
 // Version information
 export const VERSION = '0.1.0';

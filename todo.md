@@ -151,20 +151,20 @@
 ### Chunk 3.1: Change Logging System
 
 #### Step 3.1.1: Log Structure Design
-- [ ] Create `src/dedupe/logger.py`
-  - [ ] Implement `ChangeLogger` class
-  - [ ] Define JSON log format structure
-  - [ ] Track all field changes during deduplication
-  - [ ] Record conflict types (id_conflict, email_conflict)
-  - [ ] Log which records were merged and why
-  - [ ] Use `kept<Field>` and `dropped<Field>` format for field changes
-  - [ ] Add metadata for merge reasons
-- [ ] Create `tests/test_logger.py`
-  - [ ] Test log structure creation
-  - [ ] Test field change tracking
-  - [ ] Test conflict type recording
-  - [ ] Test merge reason logging
-  - [ ] Test field naming format
+- [x] Create `src/dedupe/logger.ts`
+  - [x] Implement `ChangeLogger` class
+  - [x] Define JSON log format structure
+  - [x] Track all field changes during deduplication
+  - [x] Record conflict types (id_conflict, email_conflict)
+  - [x] Log which records were merged and why
+  - [x] Use `kept<Field>` and `dropped<Field>` format for field changes
+  - [x] Add metadata for merge reasons
+- [x] Create `tests/test_logger.ts`
+  - [x] Test log structure creation
+  - [x] Test field change tracking
+  - [x] Test conflict type recording
+  - [x] Test merge reason logging
+  - [x] Test field naming format
 
 #### Step 3.1.2: Log File Generation
 - [ ] Implement log file management
