@@ -52,37 +52,37 @@
 ### Chunk 1.2: Timestamp Handling and Validation
 
 #### Step 1.2.1: Flexible Date Parsing
-- [ ] Create `src/dedupe/utils.py`
-  - [ ] Implement date parsing utility function
-  - [ ] Support ISO 8601 format (2014-05-07T17:30:20+00:00)
-  - [ ] Support RFC 3339 format
-  - [ ] Support Unix timestamps
-  - [ ] Support common date formats (YYYY-MM-DD, MM/DD/YYYY)
-  - [ ] Handle timezone information properly
-  - [ ] Add validation for invalid date formats
-  - [ ] Add fallback parsing strategies
-- [ ] Create `tests/test_utils.py`
-  - [ ] Test all supported date formats
-  - [ ] Test timezone handling
-  - [ ] Test invalid date format error handling
-  - [ ] Test edge cases (leap years, DST, etc.)
+- [x] Create `src/dedupe/utils.ts`
+  - [x] Implement date parsing utility function
+  - [x] Support ISO 8601 format (2014-05-07T17:30:20+00:00)
+  - [x] Support RFC 3339 format
+  - [x] Support Unix timestamps
+  - [x] Support common date formats (YYYY-MM-DD, MM/DD/YYYY)
+  - [x] Handle timezone information properly
+  - [x] Add validation for invalid date formats
+  - [x] Add fallback parsing strategies
+- [x] Create `tests/test_utils.ts`
+  - [x] Test all supported date formats
+  - [x] Test timezone handling
+  - [x] Test invalid date format error handling
+  - [x] Test edge cases (leap years, DST, etc.)
 
 #### Step 1.2.2: Record Validation System
-- [ ] Create `src/dedupe/validator.py`
-  - [ ] Implement comprehensive record validation
-  - [ ] Check for missing required fields (`_id`, `email`)
-  - [ ] Validate date formats can be parsed
-  - [ ] Handle empty/null values for critical fields
-  - [ ] Collect all validation errors before reporting
-  - [ ] Provide detailed error messages with example records
-  - [ ] Add error categorization (missing fields, invalid dates, etc.)
-- [ ] Create `tests/test_validator.py`
-  - [ ] Test missing required field validation
-  - [ ] Test invalid date format validation
-  - [ ] Test empty/null value validation
-  - [ ] Test multiple error collection
-  - [ ] Test error message accuracy
-  - [ ] Test error categorization
+- [x] Create `src/dedupe/validator.ts`
+  - [x] Implement comprehensive record validation
+  - [x] Check for missing required fields (`_id`, `email`)
+  - [x] Validate date formats can be parsed
+  - [x] Handle empty/null values for critical fields
+  - [x] Collect all validation errors before reporting
+  - [x] Provide detailed error messages with example records
+  - [x] Add error categorization (missing fields, invalid dates, etc.)
+- [x] Create `tests/test_validator.ts`
+  - [x] Test missing required field validation
+  - [x] Test invalid date format validation
+  - [x] Test empty/null value validation
+  - [x] Test multiple error collection
+  - [x] Test error message accuracy
+  - [x] Test error categorization
 
 ## Phase 2: Core Deduplication Logic
 
