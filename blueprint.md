@@ -4,10 +4,10 @@
 Build a command-line JSON deduplication tool that processes lead records according to specific business rules, with comprehensive logging and error handling.
 
 ## Architecture Overview
-- **Language**: Python (recommended for JSON processing and CLI tools)
+- **Language**: TypeScript (for type safety and better development experience)
 - **Structure**: Modular design with separate concerns
 - **Testing**: Test-driven development with comprehensive unit tests
-- **Dependencies**: Minimal external dependencies, focus on standard library
+- **Dependencies**: Minimal external dependencies, focus on Node.js ecosystem
 
 ## Core Components
 1. **CLI Interface** - Argument parsing and user interaction
@@ -549,11 +549,11 @@ Create a final demonstration using the leads.json file to show the complete func
 - **Type Hints**: Use type hints for better code clarity
 
 ## Dependencies
-- **Minimal External Dependencies**: Use standard library where possible
-- **JSON Processing**: Use built-in json module
-- **Date Parsing**: Use datetime and dateutil for flexible parsing
-- **CLI**: Use argparse for command line interface
-- **Testing**: Use pytest for testing framework
+- **Minimal External Dependencies**: Use Node.js built-ins where possible
+- **JSON Processing**: Use built-in JSON module
+- **Date Parsing**: Use date-fns for flexible parsing
+- **CLI**: Use commander for command line interface
+- **Testing**: Use Jest for testing framework
 
 ## Success Criteria
 - All business rules implemented correctly
