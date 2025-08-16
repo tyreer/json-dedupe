@@ -10,6 +10,7 @@ export { DateUtils, DateParseOptions, DateParseResult } from './utils';
 export { RecordValidator, ValidationConfig, ValidationError, ValidationSummary } from './validator';
 export { DeduplicationEngine, ConflictInfo, DeduplicationResult, MergeDecision } from './engine';
 export { ChangeLogger, LogEntry, ChangeLog, FieldChange } from './logger';
+export { OutputManager, OutputConfig, OutputResult } from './output';
 
 // Version information
 export const VERSION = '0.1.0';

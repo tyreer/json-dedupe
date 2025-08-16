@@ -167,26 +167,26 @@
   - [x] Test field naming format
 
 #### Step 3.1.2: Log File Generation
-- [ ] Implement log file management
-  - [ ] Generate separate log files (not included in output)
-  - [ ] Handle log file naming and location
-  - [ ] Add timestamps to log entries
-  - [ ] Ensure atomic log file writing
-  - [ ] Add log file rotation if needed
-  - [ ] Implement log file cleanup
-- [ ] Add comprehensive tests
-  - [ ] Test log file generation
-  - [ ] Test log file naming
-  - [ ] Test atomic writing
-  - [ ] Test timestamp accuracy
+- [x] Implement log file management
+  - [x] Generate separate log files (not included in output)
+  - [x] Handle log file naming and location
+  - [x] Add timestamps to log entries
+  - [x] Ensure atomic log file writing
+  - [x] Add log file rotation if needed
+  - [x] Implement log file cleanup
+- [x] Add comprehensive tests
+  - [x] Test log file generation
+  - [x] Test log file naming
+  - [x] Test atomic writing
+  - [x] Test timestamp accuracy
 
 ### Chunk 3.2: Output File Handling
 
 #### Step 3.2.1: Output File Generation
-- [ ] Create `src/dedupe/output.py`
-  - [ ] Implement `OutputManager` class
-  - [ ] Generate default output filenames (input + timestamp)
-  - [ ] Handle custom output filename specification
+- [x] Create `src/dedupe/output.ts`
+  - [x] Implement `OutputManager` class
+  - [x] Generate default output filenames (input + timestamp)
+  - [x] Handle custom output filename specification
   - [ ] Preserve original JSON structure `{"leads": [...]}`
   - [ ] Maintain original record order from input
   - [ ] Add output file validation
