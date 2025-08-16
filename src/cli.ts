@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { VERSION } from './dedupe';
+import { Processor } from './processor';
 
 /**
  * CLI configuration interface
@@ -142,18 +143,13 @@ For more information, visit: https://github.com/your-repo/json-dedupe
         this.showConfiguration();
       }
 
-      // TODO: Implement actual deduplication logic
-      // For now, just show what would be processed
+      // Perform dry run if requested
       if (this.config.dryRun) {
         return this.performDryRun();
       }
 
-      // TODO: Implement actual processing
-      return {
-        success: true,
-        exitCode: 0,
-        message: 'CLI structure ready for implementation'
-      };
+      // Perform actual processing
+      return await this.performProcessing();
 
     } catch (error) {
       return {
@@ -293,6 +289,30 @@ For more information, visit: https://github.com/your-repo/json-dedupe
    */
   public showVersion(): void {
     console.log(`${VERSION}`);
+  }
+
+  /**
+   * Perform actual processing
+   */
+  private async performProcessing(): Promise<CliResult> {
+    try {
+      const processor = new Processor(this.config);
+      const result = await processor.process();
+
+      return {
+        success: result.success,
+        exitCode: result.exitCode,
+        message: result.message,
+        error: result.error
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        exitCode: 3,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
   }
 }
 
