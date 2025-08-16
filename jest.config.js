@@ -19,4 +19,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'json'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   testPathIgnorePatterns: ['<rootDir>/tests/setup.ts'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(chalk|commander)/)'
+  ],
 };

@@ -221,16 +221,16 @@
 ### Chunk 4.1: Command Line Interface
 
 #### Step 4.1.1: Basic CLI Framework
-- [ ] Create `src/dedupe/cli.py`
-  - [ ] Implement argument parsing
-  - [ ] Add help and version flags
-  - [ ] Handle input file specification
-  - [ ] Support optional output file
-  - [ ] Add basic error handling for CLI arguments
-  - [ ] Implement argument validation
-- [ ] Create `tests/test_cli.py`
-  - [ ] Test basic argument parsing
-  - [ ] Test help and version flags
+- [x] Create `src/cli.ts`
+  - [x] Implement argument parsing
+  - [x] Add help and version flags
+  - [x] Handle input file specification
+  - [x] Support optional output file
+  - [x] Add basic error handling for CLI arguments
+  - [x] Implement argument validation
+- [x] Create `tests/test_cli.ts`
+  - [x] Test basic argument parsing
+  - [x] Test help and version flags
   - [ ] Test input file handling
   - [ ] Test output file handling
   - [ ] Test argument validation
