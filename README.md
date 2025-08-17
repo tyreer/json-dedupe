@@ -403,111 +403,40 @@ node dist/json-dedupe.js large-file.json --quiet
 
 ## Troubleshooting
 
-### Common Issues
+For common issues and solutions, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
-#### Memory Issues
-
-If you encounter memory errors:
-
-```bash
-# Increase memory limit
-node --max-old-space-size=8192 dist/json-dedupe.js large-file.json
-
-# Use smaller batch sizes
-export BATCH_SIZE=5000
-node dist/json-dedupe.js large-file.json
-```
-
-#### Date Parsing Issues
-
-If dates aren't being parsed correctly:
-
-```bash
-# Check the date format
-node dist/json-dedupe.js input.json --verbose
-
-# Use a different timestamp key
-node dist/json-dedupe.js input.json --timestamp-key createdAt
-```
-
-#### Validation Errors
-
-For validation issues:
-
-```bash
-# Use dry-run to see what would be processed
-node dist/json-dedupe.js input.json --dry-run
-
-# Check the error messages for specific examples
-node dist/json-dedupe.js input.json
-```
-
-### Debug Mode
-
-Enable debug logging:
-
-```bash
-# Set debug environment variable
-DEBUG=* node dist/json-dedupe.js input.json
-```
+Quick fixes:
+- **Memory errors**: `node --max-old-space-size=8192 dist/json-dedupe.js input.json`
+- **Date parsing**: `node dist/json-dedupe.js input.json --timestamp-key createdAt`
+- **Validation errors**: `node dist/json-dedupe.js input.json --dry-run`
 
 ## Contributing
 
-### Development Setup
-
 1. Fork the repository
-2. Create a feature branch
-3. Install dependencies: `npm install`
-4. Run tests: `npm test`
-5. Make your changes
-6. Add tests for new functionality
-7. Run the full test suite: `npm run test:coverage`
-8. Submit a pull request
-
-### Code Style
-
-- Use TypeScript with strict mode
-- Follow ESLint configuration
-- Write comprehensive tests
-- Add JSDoc comments for public APIs
-- Use conventional commit messages
+2. Install dependencies: `npm install`
+3. Run tests: `npm test`
+4. Make your changes
+5. Submit a pull request
 
 ### Testing
 
 ```bash
-# Run all tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run specific test file
-npm test -- --testPathPattern=test_models
-
-# Run tests in watch mode
-npm run test:watch
+npm test                    # Run all tests
+npm run test:coverage      # Run with coverage
+npm run test:watch         # Watch mode
 ```
-
 
 ## Version History
 
 ### v0.1.0
-- Initial release
-- Core deduplication functionality
-- Comprehensive validation and error handling
-- Performance optimization features
-- Detailed logging and change tracking
-- Command-line interface with multiple options
+- Initial release with core deduplication functionality
+- Comprehensive validation, error handling, and performance optimization
 - TypeScript implementation with full test coverage
 
 ## Support
 
-For issues and questions:
-- Check the troubleshooting section
-- Review the error messages for specific guidance
+- Check [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues
+- Review error messages for specific guidance
 - Enable verbose mode for detailed information
-- Use dry-run mode to understand what the tool will do
-
----
 
 **Note**: This tool is designed for in-memory processing. For very large datasets that exceed available memory, consider preprocessing the data or using database-based deduplication tools.
