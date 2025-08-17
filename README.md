@@ -45,9 +45,6 @@ npm test
 
 # Build the project
 npm run build
-
-# Run in development mode
-npm run dev
 ```
 
 ## Usage
