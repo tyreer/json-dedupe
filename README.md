@@ -90,28 +90,28 @@ Options:
 
 ```bash
 # Use "createdAt" instead of "entryDate" for date comparison
-node dist/json-dedupe.js leads.json --timestamp-key createdAt
+node dist/json-dedupe.js input.json --timestamp-key createdAt
 ```
 
 #### Verbose Processing
 
 ```bash
 # Show detailed processing information
-node dist/json-dedupe.js leads.json --verbose
+node dist/json-dedupe.js input.json --verbose
 ```
 
 #### Dry Run Mode
 
 ```bash
 # See what would be processed without making changes
-node dist/json-dedupe.js leads.json --dry-run
+node dist/json-dedupe.js input.json --dry-run
 ```
 
 #### Quiet Mode
 
 ```bash
 # Suppress all output except errors
-node dist/json-dedupe.js leads.json --quiet
+node dist/json-dedupe.js input.json --quiet
 ```
 
 ## Input Format
