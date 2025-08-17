@@ -7,7 +7,7 @@ export interface FieldChange {
   field: string;
   keptValue: any;
   droppedValue: any;
-  conflictType: 'id_conflict' | 'email_conflict';
+  conflictType: 'id_conflict' | 'email_conflict' | 'cross_conflict';
   reason: 'newer_date' | 'last_in_list' | 'same_record';
 }
 
@@ -18,7 +18,7 @@ export interface LogEntry {
   timestamp: string;
   keptRecordId: string;
   droppedRecordId: string;
-  conflictType: 'id_conflict' | 'email_conflict';
+  conflictType: 'id_conflict' | 'email_conflict' | 'cross_conflict';
   reason: 'newer_date' | 'last_in_list' | 'same_record';
   changes: Record<string, any>; // kept<Field> and dropped<Field> format
   metadata: {
@@ -166,14 +166,16 @@ export class ChangeLogger {
    * @param changeCount - Number of field changes
    * @private
    */
-  private updateSummary(conflictType: 'id_conflict' | 'email_conflict', changeCount: number): void {
+  private updateSummary(conflictType: 'id_conflict' | 'email_conflict' | 'cross_conflict', changeCount: number): void {
     this.summary.totalConflicts++;
     this.summary.totalChanges += changeCount;
 
     if (conflictType === 'id_conflict') {
       this.summary.idConflicts++;
-    } else {
+    } else if (conflictType === 'email_conflict') {
       this.summary.emailConflicts++;
+    } else if (conflictType === 'cross_conflict') {
+      this.summary.crossConflicts++;
     }
   }
 
@@ -243,7 +245,7 @@ export class ChangeLogger {
    * @param conflictType - The conflict type to filter by
    * @returns Filtered entries
    */
-  public getEntriesByConflictType(conflictType: 'id_conflict' | 'email_conflict'): LogEntry[] {
+  public getEntriesByConflictType(conflictType: 'id_conflict' | 'email_conflict' | 'cross_conflict'): LogEntry[] {
     return this.entries.filter(entry => entry.conflictType === conflictType);
   }
 

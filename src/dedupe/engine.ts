@@ -4,9 +4,16 @@ import { LeadRecord } from './models';
  * Interface for conflict information
  */
 export interface ConflictInfo {
-  type: 'id_conflict' | 'email_conflict';
+  type: 'id_conflict' | 'email_conflict' | 'cross_conflict';
   records: LeadRecord[];
   conflictingIds: string[];
+  conflictingEmails?: string[];
+  details?: {
+    recordId: string;
+    email: string;
+    sameIdRecords: Array<{ id: string; email: string; entryDate: string }>;
+    sameEmailRecords: Array<{ id: string; email: string; entryDate: string }>;
+  };
 }
 
 /**
@@ -31,7 +38,7 @@ export interface MergeDecision {
   keptRecord: LeadRecord;
   droppedRecord: LeadRecord;
   reason: 'newer_date' | 'last_in_list' | 'same_record';
-  conflictType: 'id_conflict' | 'email_conflict';
+  conflictType: 'id_conflict' | 'email_conflict' | 'cross_conflict';
 }
 
 /**
@@ -117,36 +124,76 @@ export class DeduplicationEngine {
 
   /**
    * Detect cross-conflicts (same record has both ID and email conflicts with different records)
-   * @returns Array of cross-conflict information
+   * @returns Array of cross-conflict information with detailed record information
    */
   public detectCrossConflicts(): ConflictInfo[] {
     const conflicts = this.detectConflicts();
     const crossConflicts: ConflictInfo[] = [];
 
-    // Group conflicts by record ID
+    // Group conflicts by record ID and email
     const recordConflicts = new Map<string, Set<string>>();
+    const emailConflicts = new Map<string, Set<string>>();
 
+    // Build conflict maps
     conflicts.forEach(conflict => {
       conflict.records.forEach(record => {
+        // Track ID conflicts
         if (!recordConflicts.has(record._id)) {
           recordConflicts.set(record._id, new Set());
         }
         recordConflicts.get(record._id)!.add(conflict.type);
+
+        // Track email conflicts
+        if (!emailConflicts.has(record.email)) {
+          emailConflicts.set(record.email, new Set());
+        }
+        emailConflicts.get(record.email)!.add(conflict.type);
       });
     });
 
-    // Find records with both ID and email conflicts
+    // Find cross-conflicts: records that appear in both ID and email conflict groups
+    const crossConflictGroups = new Map<string, LeadRecord[]>();
+
     for (const [recordId, conflictTypes] of recordConflicts.entries()) {
-      if (conflictTypes.size > 1) {
-        // This record has both ID and email conflicts
+      if (conflictTypes.has('id_conflict')) {
         const record = this.records.find(r => r._id === recordId);
-        if (record) {
-          crossConflicts.push({
-            type: 'id_conflict', // Use one type as representative
-            records: [record],
-            conflictingIds: [recordId]
-          });
+        if (record && emailConflicts.has(record.email)) {
+          // This record has both ID and email conflicts
+          const groupKey = `cross_${recordId}_${record.email}`;
+          if (!crossConflictGroups.has(groupKey)) {
+            crossConflictGroups.set(groupKey, []);
+          }
+          crossConflictGroups.get(groupKey)!.push(record);
         }
+      }
+    }
+
+    // Convert to ConflictInfo format with detailed information
+    for (const [, records] of crossConflictGroups.entries()) {
+      if (records.length > 0) {
+        const primaryRecord = records[0]!;
+        
+        // Find all records with the same ID
+        const sameIdRecords = this.records.filter(r => r._id === primaryRecord._id);
+        
+        // Find all records with the same email
+        const sameEmailRecords = this.records.filter(r => r.email === primaryRecord.email);
+        
+        // Combine all related records for this cross-conflict
+        const allRelatedRecords = new Set([...sameIdRecords, ...sameEmailRecords]);
+        
+        crossConflicts.push({
+          type: 'cross_conflict',
+          records: Array.from(allRelatedRecords),
+          conflictingIds: [primaryRecord._id],
+          conflictingEmails: [primaryRecord.email],
+          details: {
+            recordId: primaryRecord._id,
+            email: primaryRecord.email,
+            sameIdRecords: sameIdRecords.map(r => ({ id: r._id, email: r.email, entryDate: r.entryDate })),
+            sameEmailRecords: sameEmailRecords.map(r => ({ id: r._id, email: r.email, entryDate: r.entryDate }))
+          }
+        });
       }
     }
 

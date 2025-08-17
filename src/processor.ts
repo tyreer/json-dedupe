@@ -232,12 +232,13 @@ export class Processor {
       const crossConflicts = engine.detectCrossConflicts();
 
       if (crossConflicts.length > 0) {
+        const detailedError = this.generateCrossConflictError(crossConflicts);
         return {
           success: false,
           records: [],
           logger,
           statistics: { conflicts: 0, changes: 0 },
-          error: `Cross-conflicts detected: ${crossConflicts.length} groups of records have both ID and email conflicts with different records. This is not allowed.`
+          error: detailedError
         };
       }
 
@@ -317,6 +318,46 @@ export class Processor {
         error: `Output error: ${error instanceof Error ? error.message : 'Unknown error'}`
       };
     }
+  }
+
+  /**
+   * Generate detailed cross-conflict error message
+   */
+  private generateCrossConflictError(crossConflicts: any[]): string {
+    const lines: string[] = [];
+    lines.push(`❌ Cross-conflicts detected: ${crossConflicts.length} groups of records have both ID and email conflicts with different records. This is not allowed.`);
+    lines.push('');
+    
+    crossConflicts.forEach((conflict, index) => {
+      if (conflict.details) {
+        const { recordId, email, sameIdRecords, sameEmailRecords } = conflict.details;
+        
+        lines.push(`🔍 Cross-conflict group ${index + 1}:`);
+        lines.push(`   Problem: Record ID "${recordId}" and email "${email}" both have conflicts`);
+        lines.push('');
+        
+        lines.push(`   📋 Records with same ID "${recordId}":`);
+        sameIdRecords.forEach((record: any, i: number) => {
+          lines.push(`     ${i + 1}. ID: ${record.id}, Email: ${record.email}, Date: ${record.entryDate}`);
+        });
+        lines.push('');
+        
+        lines.push(`   📧 Records with same email "${email}":`);
+        sameEmailRecords.forEach((record: any, i: number) => {
+          lines.push(`     ${i + 1}. ID: ${record.id}, Email: ${record.email}, Date: ${record.entryDate}`);
+        });
+        lines.push('');
+        
+        lines.push(`   💡 Resolution: You must fix these conflicts before deduplication can proceed.`);
+        lines.push(`      - Ensure each record has a unique ID`);
+        lines.push(`      - Ensure each record has a unique email`);
+        lines.push(`      - Or merge the conflicting records manually`);
+        lines.push('');
+      }
+    });
+    
+    lines.push('🚫 Deduplication cannot proceed until cross-conflicts are resolved.');
+    return lines.join('\n');
   }
 
   /**
