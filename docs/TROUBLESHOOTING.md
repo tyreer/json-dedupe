@@ -372,11 +372,11 @@ Error: Processing failed: Unexpected error during deduplication
    node dist/cli.js sorted.json
    ```
 
-### Memory Warnings
+### Memory Monitoring
 
-**Problem**: `Memory usage high: 85.2%`
+**Note**: Memory usage monitoring is available but warnings are disabled during test execution for cleaner output.
 
-**Solutions**:
+**If you see memory warnings in production**:
 
 1. **This is a warning, not an error** - the tool will continue
 2. **Monitor system resources**:

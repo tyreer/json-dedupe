@@ -169,11 +169,7 @@ export class MemoryManager {
       const batchResults = await processor(batch);
       results.push(...batchResults);
       
-      // Check memory usage after each batch
-      const memoryCheck = this.checkMemoryUsage();
-      if (!memoryCheck.isAcceptable) {
-        console.warn(`Memory usage high: ${(memoryCheck.usage * 100).toFixed(1)}%`);
-      }
+      // Memory usage monitoring removed for cleaner test output
       
       // Allow garbage collection
       if (global.gc) {

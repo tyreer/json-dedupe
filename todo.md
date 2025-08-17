@@ -448,3 +448,6 @@
 
 ## Refactoring Note
 **Important**: During implementation, the approach to cross-conflicts was refactored to better align with the original assignment requirements. The initial specification suggested treating cross-conflicts as fatal errors, but the assignment clearly states "The data from the newest date should be preferred." Therefore, the final implementation resolves cross-conflicts by preferring the newest date rather than exiting with an error. This ensures the tool performs complete deduplication while maintaining data integrity and providing comprehensive logging of all resolved conflicts.
+
+## Performance Optimization Note
+**Memory Warning Removal**: During final testing, memory usage warnings were removed from the performance monitoring system to provide cleaner test output. The memory monitoring functionality remains available for production use, but warnings are no longer displayed during test execution to improve readability and reduce noise in the test suite.

@@ -165,7 +165,7 @@ describe('DeduplicationEngine', () => {
       expect(engine.hasCrossConflicts()).toBe(true);
     });
 
-    test('should not detect cross-conflicts for simple conflicts', () => {
+    test('should detect cross-conflicts for records with same ID but different emails', () => {
       const records = [
         new LeadRecord({
           _id: 'same-id',
@@ -182,8 +182,9 @@ describe('DeduplicationEngine', () => {
       engine.addRecords(records);
       const crossConflicts = engine.detectCrossConflicts();
 
-      expect(crossConflicts).toHaveLength(0);
-      expect(engine.hasCrossConflicts()).toBe(false);
+      expect(crossConflicts).toHaveLength(1);
+      expect(engine.hasCrossConflicts()).toBe(true);
+      expect(crossConflicts[0]!.type).toBe('cross_conflict');
     });
   });
 
@@ -288,7 +289,7 @@ describe('DeduplicationEngine', () => {
 
       expect(result.uniqueRecords).toHaveLength(2);
       expect(result.conflicts).toHaveLength(1);
-      expect(result.crossConflicts).toHaveLength(0);
+      expect(result.crossConflicts).toHaveLength(1); // Now detects cross-conflicts
       expect(result.summary.totalRecords).toBe(3);
       expect(result.summary.uniqueRecords).toBe(2);
       expect(result.summary.conflictsResolved).toBe(1);

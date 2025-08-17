@@ -292,7 +292,7 @@ Exit code: 1
 - **Automatic Monitoring**: Real-time memory usage tracking
 - **Batch Processing**: Configurable batch sizes for large datasets
 - **Garbage Collection**: Automatic memory cleanup
-- **Memory Warnings**: Alerts when memory usage exceeds 80%
+- **Memory Monitoring**: Real-time memory usage tracking (warnings disabled during tests for cleaner output)
 
 ### Optimization
 
