@@ -1,10 +1,10 @@
-# JSON Deduplication Tool
+# JSON Deduplication CLI
 
-A powerful command-line tool for deduplicating JSON records with comprehensive logging, validation, and performance optimization. Built with TypeScript and Node.js.
+A command-line tool for deduplicating JSON records with comprehensive logging, validation, and performance optimization. Built with TypeScript and Node.js.
 
 ## Features
 
-- **Smart Deduplication**: Removes duplicate records based on ID and email fields
+- **Deduplication**: Removes duplicate records based on ID and email fields
 - **Date-Based Resolution**: Prefers records with the newest date, with last-in-list tie-breaker
 - **Cross-Conflict Resolution**: Handles complex scenarios where records have both ID and email conflicts
 - **Comprehensive Validation**: Validates required fields, date formats, and data integrity
@@ -495,9 +495,6 @@ npm test -- --testPathPattern=test_models
 npm run test:watch
 ```
 
-## License
-
-[Add your license information here]
 
 ## Version History
 
