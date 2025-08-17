@@ -9,7 +9,7 @@ jest.mock('chalk', () => ({
 }));
 
 import { Processor, ProgressCallback } from '../src/processor';
-import { CliConfig } from '../src/cli';
+import { CliConfig } from '../src/json-dedupe';
 import { LeadRecord } from '../src/dedupe/models';
 import * as fs from 'fs';
 import * as path from 'path';

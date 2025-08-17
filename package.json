@@ -4,7 +4,7 @@
   "description": "A command-line tool for deduplicating JSON records with comprehensive logging and validation",
   "main": "dist/dedupe/index.js",
   "bin": {
-    "dedupe": "./dist/dedupe/cli.js"
+    "json-dedupe": "./dist/json-dedupe.js"
   },
   "scripts": {
     "test": "jest",
@@ -14,8 +14,8 @@
     "lint:fix": "eslint src/ tests/ --fix",
     "format": "prettier --write src/ tests/",
     "build": "tsc",
-    "dev": "ts-node src/dedupe/cli.ts",
-    "start": "node dist/dedupe/cli.js"
+    "dev": "ts-node src/json-dedupe.ts",
+    "start": "node dist/json-dedupe.js"
   },
   "keywords": [
     "json",

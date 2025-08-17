@@ -8,7 +8,7 @@ jest.mock('chalk', () => ({
   cyan: jest.fn((text: string) => text),
 }));
 
-import { Cli, CliConfig } from '../src/cli';
+import { Cli, CliConfig } from '../src/json-dedupe';
 
 // Mock console methods to capture output
 const originalConsoleLog = console.log;

@@ -4,7 +4,7 @@ import { DeduplicationEngine } from './dedupe/engine';
 import { ChangeLogger } from './dedupe/logger';
 import { OutputManager } from './dedupe/output';
 import { LeadRecord } from './dedupe/models';
-import { CliConfig } from './cli';
+import { CliConfig } from './json-dedupe';
 import chalk from 'chalk';
 import * as fs from 'fs';
 

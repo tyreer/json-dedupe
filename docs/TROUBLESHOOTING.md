@@ -20,14 +20,15 @@ This guide helps you resolve common issues when using the JSON Deduplication Too
 **Problem**: `command not found: json-dedupe`
 
 **Solutions**:
-1. **Install globally**:
+1. **Use local installation**:
    ```bash
-   npm install -g .
+   node dist/json-dedupe.js input.json
    ```
 
-2. **Use local installation**:
+2. **Check if built**:
    ```bash
-   node dist/cli.js input.json
+   npm run build
+   node dist/json-dedupe.js input.json
    ```
 
 3. **Check PATH**:
@@ -55,7 +56,7 @@ This guide helps you resolve common issues when using the JSON Deduplication Too
 
 3. **Use sudo (if necessary)**:
    ```bash
-   sudo node dist/cli.js input.json
+   sudo node dist/json-dedupe.js input.json
    ```
 
 ### Node.js Version Issues
@@ -137,7 +138,7 @@ Error: Validation failed
 
 3. **Use different timestamp key**:
    ```bash
-   node dist/cli.js input.json --timestamp-key createdAt
+   node dist/json-dedupe.js input.json --timestamp-key createdAt
    ```
 
 #### Empty Values
@@ -181,7 +182,7 @@ Error: ENOENT: no such file or directory, open 'input.json'
 
 2. **Use absolute path**:
    ```bash
-   node dist/cli.js /full/path/to/input.json
+   node dist/json-dedupe.js /full/path/to/input.json
    ```
 
 3. **Check file extension**:
@@ -265,7 +266,7 @@ Error: Processing failed: Unexpected error during deduplication
 **Fix**:
 1. **Enable verbose mode**:
    ```bash
-   node dist/cli.js input.json --verbose
+   node dist/json-dedupe.js input.json --verbose
    ```
 
 2. **Check for malformed JSON**:
@@ -275,7 +276,7 @@ Error: Processing failed: Unexpected error during deduplication
 
 3. **Use dry-run mode**:
    ```bash
-   node dist/cli.js input.json --dry-run
+   node dist/json-dedupe.js input.json --dry-run
    ```
 
 ## Performance Issues
@@ -288,28 +289,28 @@ Error: Processing failed: Unexpected error during deduplication
 
 1. **Enable performance monitoring**:
    ```bash
-   node dist/cli.js large-file.json --verbose
+   node dist/json-dedupe.js large-file.json --verbose
    ```
 
 2. **Increase memory limit**:
    ```bash
-   node --max-old-space-size=8192 dist/cli.js large-file.json
+   node --max-old-space-size=8192 dist/json-dedupe.js large-file.json
    ```
 
 3. **Use quiet mode**:
    ```bash
-   node dist/cli.js large-file.json --quiet
+   node dist/json-dedupe.js large-file.json --quiet
    ```
 
 4. **Enable garbage collection**:
    ```bash
-   node --expose-gc dist/cli.js large-file.json
+   node --expose-gc dist/json-dedupe.js large-file.json
    ```
 
 5. **Process in smaller batches**:
    ```bash
    export BATCH_SIZE=5000
-   node dist/cli.js large-file.json
+   node dist/json-dedupe.js large-file.json
    ```
 
 ### High Memory Usage
@@ -327,7 +328,7 @@ Error: Processing failed: Unexpected error during deduplication
 2. **Reduce batch size**:
    ```bash
    export BATCH_SIZE=1000
-   node dist/cli.js large-file.json
+   node dist/json-dedupe.js large-file.json
    ```
 
 3. **Use streaming for very large files**:
@@ -337,13 +338,13 @@ Error: Processing failed: Unexpected error during deduplication
    
    # Process each chunk
    for file in chunk_*; do
-     node dist/cli.js "$file" -o "output_$file"
+     node dist/json-dedupe.js "$file" -o "output_$file"
    done
    ```
 
 4. **Enable garbage collection**:
    ```bash
-   node --expose-gc dist/cli.js large-file.json
+   node --expose-gc dist/json-dedupe.js large-file.json
    ```
 
 ## Memory Issues
@@ -356,7 +357,7 @@ Error: Processing failed: Unexpected error during deduplication
 
 1. **Increase heap size**:
    ```bash
-   node --max-old-space-size=8192 dist/cli.js large-file.json
+   node --max-old-space-size=8192 dist/json-dedupe.js large-file.json
    ```
 
 2. **Process smaller files**:
@@ -369,7 +370,7 @@ Error: Processing failed: Unexpected error during deduplication
    ```bash
    # Sort by date to optimize deduplication
    jq -s '.[0].leads | sort_by(.entryDate)' large-file.json > sorted.json
-   node dist/cli.js sorted.json
+   node dist/json-dedupe.js sorted.json
    ```
 
 ### Memory Monitoring
@@ -404,7 +405,7 @@ Error: Processing failed: Unexpected error during deduplication
 
 2. **Use verbose mode to see parsing details**:
    ```bash
-   node dist/cli.js input.json --verbose
+   node dist/json-dedupe.js input.json --verbose
    ```
 
 3. **Convert dates to supported format**:
@@ -415,7 +416,7 @@ Error: Processing failed: Unexpected error during deduplication
 
 4. **Use different timestamp key**:
    ```bash
-   node dist/cli.js input.json --timestamp-key createdAt
+   node dist/json-dedupe.js input.json --timestamp-key createdAt
    ```
 
 ### Field Validation Issues
@@ -459,7 +460,7 @@ Error: Processing failed: Unexpected error during deduplication
 
 2. **Use absolute path**:
    ```bash
-   node dist/cli.js input.json -o /full/path/to/output.json
+   node dist/json-dedupe.js input.json -o /full/path/to/output.json
    ```
 
 3. **Check disk space**:
@@ -469,7 +470,7 @@ Error: Processing failed: Unexpected error during deduplication
 
 4. **Use different output location**:
    ```bash
-   node dist/cli.js input.json -o /tmp/output.json
+   node dist/json-dedupe.js input.json -o /tmp/output.json
    ```
 
 ### Log File Issues
@@ -487,13 +488,13 @@ Error: Processing failed: Unexpected error during deduplication
 
 2. **Use absolute path**:
    ```bash
-   node dist/cli.js input.json --log-file /full/path/to/changes.log
+   node dist/json-dedupe.js input.json --log-file /full/path/to/changes.log
    ```
 
 3. **Disable logging** (if not needed):
    ```bash
    # Don't specify log file - it will use default location
-   node dist/cli.js input.json
+   node dist/json-dedupe.js input.json
    ```
 
 ### Backup File Issues
@@ -514,7 +515,7 @@ Error: Processing failed: Unexpected error during deduplication
    # The tool doesn't have a --no-backup option, but you can
    # manually manage backups by copying files before processing
    cp input.json input.json.backup
-   node dist/cli.js input.json
+   node dist/json-dedupe.js input.json
    ```
 
 ## Debug Mode
@@ -527,22 +528,22 @@ Error: Processing failed: Unexpected error during deduplication
 
 1. **Enable debug mode**:
    ```bash
-   DEBUG=* node dist/cli.js input.json
+   DEBUG=* node dist/json-dedupe.js input.json
    ```
 
 2. **Enable specific debug categories**:
    ```bash
-   DEBUG=json-dedupe:* node dist/cli.js input.json
+   DEBUG=json-dedupe:* node dist/json-dedupe.js input.json
    ```
 
 3. **Enable verbose mode**:
    ```bash
-   node dist/cli.js input.json --verbose
+   node dist/json-dedupe.js input.json --verbose
    ```
 
 4. **Use dry-run mode**:
    ```bash
-   node dist/cli.js input.json --dry-run
+   node dist/json-dedupe.js input.json --dry-run
    ```
 
 ### Debug Output Examples
@@ -559,22 +560,22 @@ DEBUG=json-dedupe:output Writing output to: output.json
 
 1. **Parsing issues**:
    ```bash
-   DEBUG=json-dedupe:parser node dist/cli.js input.json
+   DEBUG=json-dedupe:parser node dist/json-dedupe.js input.json
    ```
 
 2. **Validation issues**:
    ```bash
-   DEBUG=json-dedupe:validator node dist/cli.js input.json
+   DEBUG=json-dedupe:validator node dist/json-dedupe.js input.json
    ```
 
 3. **Deduplication issues**:
    ```bash
-   DEBUG=json-dedupe:engine node dist/cli.js input.json
+   DEBUG=json-dedupe:engine node dist/json-dedupe.js input.json
    ```
 
 4. **Output issues**:
    ```bash
-   DEBUG=json-dedupe:output node dist/cli.js input.json
+   DEBUG=json-dedupe:output node dist/json-dedupe.js input.json
    ```
 
 ## Getting Help
@@ -605,7 +606,7 @@ When asking for help, include:
 Error: Validation failed
 - 3 records missing required field '_id'
 
-Command: node dist/cli.js leads.json --verbose
+Command: node dist/json-dedupe.js leads.json --verbose
 
 Node.js version: v18.15.0
 OS: macOS 13.2.1

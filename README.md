@@ -20,12 +20,12 @@ A command-line tool for deduplicating JSON records with comprehensive logging, v
 - Node.js 16.0 or higher
 - npm 8.0 or higher
 
-### Install from Source
+## Quick Start
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd adobe-json
+git clone https://github.com/tyreer/json-dedupe.git
+cd json-dedupe
 
 # Install dependencies
 npm install
@@ -33,21 +33,15 @@ npm install
 # Build the project
 npm run build
 
-# Install globally (optional)
-npm install -g .
+# Run the tool
+node dist/json-dedupe.js input.json
 ```
 
-### Development Setup
+### Development
 
 ```bash
-# Install dependencies
-npm install
-
 # Run tests
 npm test
-
-# Run tests with coverage
-npm run test:coverage
 
 # Build the project
 npm run build
@@ -62,19 +56,19 @@ npm run dev
 
 ```bash
 # Process a single file
-node dist/cli.js input.json
+node dist/json-dedupe.js input.json
 
 # Process multiple files
-node dist/cli.js file1.json file2.json file3.json
+node dist/json-dedupe.js file1.json file2.json file3.json
 
 # Read from stdin
-cat input.json | node dist/cli.js
+cat input.json | node dist/json-dedupe.js
 
 # Specify output file
-node dist/cli.js input.json -o output.json
+node dist/json-dedupe.js input.json -o output.json
 
 # Specify log file
-node dist/cli.js input.json --log-file changes.log
+node dist/json-dedupe.js input.json --log-file changes.log
 ```
 
 ### Command Line Options
@@ -99,28 +93,28 @@ Options:
 
 ```bash
 # Use "createdAt" instead of "entryDate" for date comparison
-node dist/cli.js leads.json --timestamp-key createdAt
+node dist/json-dedupe.js leads.json --timestamp-key createdAt
 ```
 
 #### Verbose Processing
 
 ```bash
 # Show detailed processing information
-node dist/cli.js leads.json --verbose
+node dist/json-dedupe.js leads.json --verbose
 ```
 
 #### Dry Run Mode
 
 ```bash
 # See what would be processed without making changes
-node dist/cli.js leads.json --dry-run
+node dist/json-dedupe.js leads.json --dry-run
 ```
 
 #### Quiet Mode
 
 ```bash
 # Suppress all output except errors
-node dist/cli.js leads.json --quiet
+node dist/json-dedupe.js leads.json --quiet
 ```
 
 ## Input Format
@@ -307,7 +301,7 @@ The tool provides comprehensive performance metrics:
 
 ```bash
 # Enable verbose mode to see performance information
-node dist/cli.js large-file.json --verbose
+node dist/json-dedupe.js large-file.json --verbose
 ```
 
 Output includes:
@@ -399,13 +393,13 @@ For large datasets, consider these optimizations:
 
 ```bash
 # Increase Node.js memory limit
-node --max-old-space-size=8192 dist/cli.js large-file.json
+node --max-old-space-size=8192 dist/json-dedupe.js large-file.json
 
 # Enable garbage collection
-node --expose-gc dist/cli.js large-file.json
+node --expose-gc dist/json-dedupe.js large-file.json
 
 # Use quiet mode for better performance
-node dist/cli.js large-file.json --quiet
+node dist/json-dedupe.js large-file.json --quiet
 ```
 
 ## Troubleshooting
@@ -418,11 +412,11 @@ If you encounter memory errors:
 
 ```bash
 # Increase memory limit
-node --max-old-space-size=8192 dist/cli.js large-file.json
+node --max-old-space-size=8192 dist/json-dedupe.js large-file.json
 
 # Use smaller batch sizes
 export BATCH_SIZE=5000
-node dist/cli.js large-file.json
+node dist/json-dedupe.js large-file.json
 ```
 
 #### Date Parsing Issues
@@ -431,10 +425,10 @@ If dates aren't being parsed correctly:
 
 ```bash
 # Check the date format
-node dist/cli.js input.json --verbose
+node dist/json-dedupe.js input.json --verbose
 
 # Use a different timestamp key
-node dist/cli.js input.json --timestamp-key createdAt
+node dist/json-dedupe.js input.json --timestamp-key createdAt
 ```
 
 #### Validation Errors
@@ -443,10 +437,10 @@ For validation issues:
 
 ```bash
 # Use dry-run to see what would be processed
-node dist/cli.js input.json --dry-run
+node dist/json-dedupe.js input.json --dry-run
 
 # Check the error messages for specific examples
-node dist/cli.js input.json
+node dist/json-dedupe.js input.json
 ```
 
 ### Debug Mode
@@ -455,7 +449,7 @@ Enable debug logging:
 
 ```bash
 # Set debug environment variable
-DEBUG=* node dist/cli.js input.json
+DEBUG=* node dist/json-dedupe.js input.json
 ```
 
 ## Contributing
