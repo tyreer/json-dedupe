@@ -64,7 +64,7 @@ export class RecordValidator {
         errors.push({
           type: 'missing_field',
           field,
-          message: `Missing required field: ${field}`,
+          message: `Missing required field '${field}' in record ${index + 1} (ID: ${record._id || 'unknown'})`,
           recordIndex: index,
           recordId: record._id
         });
@@ -72,7 +72,7 @@ export class RecordValidator {
         errors.push({
           type: 'empty_value',
           field,
-          message: `Empty value for required field: ${field}`,
+          message: `Empty value for required field '${field}' in record ${index + 1} (ID: ${record._id || 'unknown'})`,
           recordIndex: index,
           recordId: record._id
         });
@@ -88,7 +88,7 @@ export class RecordValidator {
           errors.push({
             type: 'invalid_date',
             field,
-            message: `Invalid date format for field ${field}: ${value}`,
+            message: `Invalid date format for field '${field}' in record ${index + 1} (ID: ${record._id || 'unknown'}): "${value}". Expected formats: ISO 8601, RFC 3339, Unix timestamp, YYYY-MM-DD, MM/DD/YYYY`,
             recordIndex: index,
             recordId: record._id
           });
@@ -143,25 +143,23 @@ export class RecordValidator {
    */
   public getErrorReport(summary: ValidationSummary): string {
     if (summary.isValid) {
-      return 'All records are valid.';
+      return '✅ All records are valid.';
     }
 
     const lines: string[] = [];
-    lines.push(`Validation failed: ${summary.invalidRecords} of ${summary.totalRecords} records have errors.`);
+    lines.push(`❌ Validation failed: ${summary.invalidRecords} of ${summary.totalRecords} records have errors.`);
     lines.push('');
 
     // Group errors by type
     const errorsByType = this.groupErrorsByType(summary.errors);
     
     for (const [type, errors] of Object.entries(errorsByType)) {
-      lines.push(`${this.getErrorTypeDescription(type)} (${errors.length} occurrences):`);
+      lines.push(`🔍 ${this.getErrorTypeDescription(type)} (${errors.length} occurrences):`);
       
       // Show first few examples
       const examples = errors.slice(0, 3);
       examples.forEach(error => {
-        const location = error.recordIndex !== undefined ? `record ${error.recordIndex}` : '';
-        const id = error.recordId ? ` (ID: ${error.recordId})` : '';
-        lines.push(`  - ${error.message}${location}${id}`);
+        lines.push(`  • ${error.message}`);
       });
       
       if (errors.length > 3) {
@@ -169,6 +167,12 @@ export class RecordValidator {
       }
       lines.push('');
     }
+
+    lines.push('💡 Tips:');
+    lines.push('  • Check that all required fields (_id, email, entryDate) are present');
+    lines.push('  • Ensure date formats are valid (ISO 8601, RFC 3339, Unix timestamp, YYYY-MM-DD, MM/DD/YYYY)');
+    lines.push('  • Remove or fill empty values in required fields');
+    lines.push('  • Use --verbose flag for more detailed error information');
 
     return lines.join('\n');
   }

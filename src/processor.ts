@@ -345,24 +345,28 @@ export class Processor {
     const reduction = statistics.inputRecords - statistics.outputRecords;
     const reductionPercent = ((reduction / statistics.inputRecords) * 100).toFixed(1);
 
-    let message = `Successfully processed ${statistics.inputRecords} records`;
+    let message = `✅ Successfully processed ${statistics.inputRecords} records`;
     
     if (reduction > 0) {
       message += `, removed ${reduction} duplicates (${reductionPercent}% reduction)`;
+    } else {
+      message += ` (no duplicates found)`;
     }
     
     message += `, output ${statistics.outputRecords} unique records`;
     
     if (statistics.conflicts > 0) {
-      message += `\nResolved ${statistics.conflicts} conflicts with ${statistics.changes} field changes`;
+      message += `\n🔧 Resolved ${statistics.conflicts} conflicts with ${statistics.changes} field changes`;
+    } else {
+      message += `\n✨ No conflicts detected`;
     }
     
     if (statistics.outputFile) {
-      message += `\nOutput written to: ${statistics.outputFile}`;
+      message += `\n📄 Output written to: ${statistics.outputFile}`;
     }
     
     if (statistics.logFile) {
-      message += `\nChange log written to: ${statistics.logFile}`;
+      message += `\n📋 Change log written to: ${statistics.logFile}`;
     }
 
     return message;

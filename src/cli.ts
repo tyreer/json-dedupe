@@ -281,6 +281,69 @@ For more information, visit: https://github.com/your-repo/json-dedupe
    * Display help
    */
   public showHelp(): void {
+    console.log(`
+JSON Deduplication Tool v${VERSION}
+
+A powerful command-line tool for deduplicating JSON records with comprehensive logging, validation, and performance optimization.
+
+USAGE:
+  json-dedupe [options] [files...]
+
+EXAMPLES:
+  # Process a single file
+  json-dedupe input.json
+
+  # Process multiple files
+  json-dedupe file1.json file2.json file3.json
+
+  # Read from stdin
+  cat input.json | json-dedupe
+
+  # Specify output and log files
+  json-dedupe input.json -o output.json --log-file changes.log
+
+  # Use custom date field
+  json-dedupe input.json --timestamp-key createdAt
+
+  # Verbose processing with performance info
+  json-dedupe large-file.json --verbose
+
+  # Dry run to see what would be processed
+  json-dedupe input.json --dry-run
+
+  # Quiet mode for better performance
+  json-dedupe large-file.json --quiet
+
+INPUT FORMAT:
+  The tool expects JSON files with the following structure:
+  {
+    "leads": [
+      {
+        "_id": "unique-identifier",
+        "email": "user@example.com",
+        "entryDate": "2014-05-07T17:30:20+00:00",
+        "firstName": "John",
+        "lastName": "Doe",
+        "address": "123 Main St"
+      }
+    ]
+  }
+
+DEDUPLICATION RULES:
+  - Records are considered duplicates if they share the same _id or email
+  - Conflicts are resolved by preferring records with newer dates
+  - If dates are identical, the last record in the input is preferred
+  - Cross-conflicts (same email, different IDs) are treated as errors
+
+EXIT CODES:
+  0 - Success
+  1 - Validation errors (missing fields, invalid dates, etc.)
+  2 - I/O errors (file not found, permission denied, etc.)
+  3 - General errors (cross-conflicts, processing errors, etc.)
+
+For more information, visit: https://github.com/your-repo/json-dedupe
+For troubleshooting, see: docs/TROUBLESHOOTING.md
+    `);
     this.program.help();
   }
 

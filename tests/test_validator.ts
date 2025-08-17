@@ -32,7 +32,7 @@ describe('RecordValidator', () => {
       expect(errors).toHaveLength(1);
       expect(errors[0]!.type).toBe('missing_field');
       expect(errors[0]!.field).toBe('_id');
-      expect(errors[0]!.message).toContain('Missing required field: _id');
+      expect(errors[0]!.message).toContain('Missing required field \'_id\'');
     });
 
     test('should detect missing email field', () => {
@@ -211,7 +211,7 @@ describe('RecordValidator', () => {
       const summary = validator.validateRecords(records);
       const report = validator.getErrorReport(summary);
 
-      expect(report).toBe('All records are valid.');
+      expect(report).toBe('✅ All records are valid.');
     });
 
     test('should generate detailed error report', () => {
@@ -239,9 +239,9 @@ describe('RecordValidator', () => {
       expect(report).toContain('Validation failed: 3 of 3 records have errors');
       expect(report).toContain('Empty Values (2 occurrences)');
       expect(report).toContain('Invalid Date Formats (1 occurrences)');
-      expect(report).toContain('Empty value for required field: _id');
-      expect(report).toContain('Empty value for required field: email');
-      expect(report).toContain('Invalid date format for field entryDate');
+      expect(report).toContain('Empty value for required field \'_id\'');
+      expect(report).toContain('Empty value for required field \'email\'');
+      expect(report).toContain('Invalid date format for field \'entryDate\'');
     });
   });
 
