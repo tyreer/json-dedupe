@@ -217,7 +217,7 @@ export class Processor {
     success: boolean;
     records: LeadRecord[];
     logger: ChangeLogger;
-    statistics: { conflicts: number; changes: number };
+    statistics: { conflicts: number; changes: number; crossConflicts?: number };
     error?: string;
   }> {
     try {
@@ -227,31 +227,31 @@ export class Processor {
       // Add records to engine
       engine.addRecords(records);
 
-      // Detect conflicts
-      const conflicts = engine.detectConflicts();
-      const crossConflicts = engine.detectCrossConflicts();
-
-      if (crossConflicts.length > 0) {
-        const detailedError = this.generateCrossConflictError(crossConflicts);
-        return {
-          success: false,
-          records: [],
-          logger,
-          statistics: { conflicts: 0, changes: 0 },
-          error: detailedError
-        };
-      }
-
-      // Resolve conflicts
-      const decisions = engine.resolveConflicts(conflicts);
-      logger.logMergeDecisions(decisions);
-
-      // Get deduplicated records
+      // Perform complete deduplication (including cross-conflicts)
       const result = engine.deduplicate();
       const deduplicatedRecords = result.uniqueRecords;
+      const allConflicts = result.conflicts;
+      const crossConflicts = result.crossConflicts;
+
+      // Log all conflicts that were resolved
+      if (crossConflicts.length > 0) {
+        logger.logCrossConflicts(crossConflicts);
+        if (this.config.verbose) {
+          console.log(chalk.yellow(`⚠️  Cross-conflicts detected and resolved: ${crossConflicts.length} groups`));
+          crossConflicts.forEach((conflict, index) => {
+            if (conflict.details) {
+              console.log(chalk.yellow(`   Group ${index + 1}: ID "${conflict.details.recordId}" and email "${conflict.details.email}" conflicts resolved`));
+            }
+          });
+        }
+      }
+
+      // Log merge decisions for all resolved conflicts
+      const decisions = engine.resolveConflicts(allConflicts);
+      logger.logMergeDecisions(decisions);
 
       if (this.config.verbose) {
-        console.log(chalk.gray(`  Conflicts resolved: ${conflicts.length}`));
+        console.log(chalk.gray(`  Conflicts resolved: ${allConflicts.length}`));
         console.log(chalk.gray(`  Records after deduplication: ${deduplicatedRecords.length}`));
       }
 
@@ -260,8 +260,9 @@ export class Processor {
         records: deduplicatedRecords,
         logger,
         statistics: {
-          conflicts: conflicts.length,
-          changes: decisions.length
+          conflicts: allConflicts.length,
+          changes: decisions.length,
+          crossConflicts: crossConflicts.length
         }
       };
 
@@ -320,45 +321,7 @@ export class Processor {
     }
   }
 
-  /**
-   * Generate detailed cross-conflict error message
-   */
-  private generateCrossConflictError(crossConflicts: any[]): string {
-    const lines: string[] = [];
-    lines.push(`❌ Cross-conflicts detected: ${crossConflicts.length} groups of records have both ID and email conflicts with different records. This is not allowed.`);
-    lines.push('');
-    
-    crossConflicts.forEach((conflict, index) => {
-      if (conflict.details) {
-        const { recordId, email, sameIdRecords, sameEmailRecords } = conflict.details;
-        
-        lines.push(`🔍 Cross-conflict group ${index + 1}:`);
-        lines.push(`   Problem: Record ID "${recordId}" and email "${email}" both have conflicts`);
-        lines.push('');
-        
-        lines.push(`   📋 Records with same ID "${recordId}":`);
-        sameIdRecords.forEach((record: any, i: number) => {
-          lines.push(`     ${i + 1}. ID: ${record.id}, Email: ${record.email}, Date: ${record.entryDate}`);
-        });
-        lines.push('');
-        
-        lines.push(`   📧 Records with same email "${email}":`);
-        sameEmailRecords.forEach((record: any, i: number) => {
-          lines.push(`     ${i + 1}. ID: ${record.id}, Email: ${record.email}, Date: ${record.entryDate}`);
-        });
-        lines.push('');
-        
-        lines.push(`   💡 Resolution: You must fix these conflicts before deduplication can proceed.`);
-        lines.push(`      - Ensure each record has a unique ID`);
-        lines.push(`      - Ensure each record has a unique email`);
-        lines.push(`      - Or merge the conflicting records manually`);
-        lines.push('');
-      }
-    });
-    
-    lines.push('🚫 Deduplication cannot proceed until cross-conflicts are resolved.');
-    return lines.join('\n');
-  }
+
 
   /**
    * Generate statistics
@@ -366,7 +329,7 @@ export class Processor {
   private generateStatistics(
     inputCount: number,
     outputCount: number,
-    deduplicationStats: { conflicts: number; changes: number },
+    deduplicationStats: { conflicts: number; changes: number; crossConflicts?: number },
     outputResult: { outputFile?: string | undefined; logFile?: string | undefined }
   ) {
           return {
@@ -374,6 +337,7 @@ export class Processor {
         outputRecords: outputCount,
         conflicts: deduplicationStats.conflicts,
         changes: deduplicationStats.changes,
+        crossConflicts: deduplicationStats.crossConflicts,
         outputFile: outputResult.outputFile ?? undefined,
         logFile: outputResult.logFile ?? undefined
       };
@@ -398,6 +362,11 @@ export class Processor {
     
     if (statistics.conflicts > 0) {
       message += `\n🔧 Resolved ${statistics.conflicts} conflicts with ${statistics.changes} field changes`;
+      
+      // Add cross-conflict information if available
+      if (statistics.crossConflicts && statistics.crossConflicts > 0) {
+        message += `\n⚠️  Including ${statistics.crossConflicts} cross-conflicts resolved by preferring newest dates`;
+      }
     } else {
       message += `\n✨ No conflicts detected`;
     }

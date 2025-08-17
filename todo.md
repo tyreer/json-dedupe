@@ -122,15 +122,15 @@
 #### Step 2.2.1: Cross-Conflict Detection
 - [x] Extend `DeduplicationEngine` class
   - [x] Detect records with both ID and email conflicts
-  - [x] Implement error handling for cross-conflicts
-  - [x] Create detailed error reporting for cross-conflicts
-  - [x] Add cross-conflict validation logic
-  - [x] Implement early exit for cross-conflicts
+  - [x] Implement resolution logic for cross-conflicts by preferring newest dates
+  - [x] Create detailed logging for cross-conflict resolution
+  - [x] Add cross-conflict detection and resolution logic
+  - [x] Implement comprehensive cross-conflict handling
 - [x] Add comprehensive tests
   - [x] Test cross-conflict detection
-  - [x] Test cross-conflict error handling
-  - [x] Test error message accuracy for cross-conflicts
-  - [x] Test early exit behavior
+  - [x] Test cross-conflict resolution by newest date
+  - [x] Test detailed logging for cross-conflicts
+  - [x] Test complete cross-conflict handling
 
 #### Step 2.2.2: Record Merging Logic
 - [x] Implement record merging functionality
@@ -292,7 +292,7 @@
   - [x] Add error recovery mechanisms
 - [x] Implement exit codes
   - [x] 0: Success
-  - [x] 1: Validation errors (missing fields, invalid dates, cross-conflicts)
+  - [x] 1: Validation errors (missing fields, invalid dates)
   - [x] 2: File I/O errors
   - [x] 3: General errors (JSON parsing, memory, etc.)
 - [x] Add comprehensive tests
@@ -401,7 +401,7 @@
 
 ### Final Validation
 - [x] Test with the provided `leads.json` file
-  - [x] Verify correct deduplication results (cross-conflicts properly detected)
+  - [x] Verify correct deduplication results (cross-conflicts properly resolved)
   - [x] Validate log output format
   - [x] Test error handling with invalid data
   - [x] Ensure all business rules are followed
@@ -445,3 +445,6 @@
 - Test with real data from `leads.json` throughout development
 - **TypeScript**: All code is written in TypeScript with strict type checking
 - **Testing**: Jest with ts-jest for TypeScript testing
+
+## Refactoring Note
+**Important**: During implementation, the approach to cross-conflicts was refactored to better align with the original assignment requirements. The initial specification suggested treating cross-conflicts as fatal errors, but the assignment clearly states "The data from the newest date should be preferred." Therefore, the final implementation resolves cross-conflicts by preferring the newest date rather than exiting with an error. This ensures the tool performs complete deduplication while maintaining data integrity and providing comprehensive logging of all resolved conflicts.

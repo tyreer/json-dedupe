@@ -45,8 +45,9 @@ dedupe [options] <input-file> [output-file]
 
 ### Conflict Resolution
 - **Simultaneous Processing**: Handle ID and email conflicts simultaneously
-- **Cross-Conflicts**: If a record has both ID conflict AND email conflict with different records, exit with error
+- **Cross-Conflicts**: Records with both ID conflict AND email conflict with different records are resolved by preferring newest dates
 - **Data Preservation**: Must not erase potentially valuable data or fabricate _id values
+- **Date-Based Resolution**: All conflicts (including cross-conflicts) are resolved by preferring the record with the newest date
 
 ### Timestamp Handling
 - **Default Field**: `entryDate`
@@ -59,7 +60,6 @@ dedupe [options] <input-file> [output-file]
 - **Missing Required Fields**: Exit if records missing `_id` or `email` fields
 - **Invalid Date Formats**: Exit if records have unparseable date formats
 - **Empty/Null Values**: Exit if critical fields (`_id`, `email`) have empty/null values
-- **Cross-Conflicts**: Exit if records have both ID and email conflicts with different records
 
 ### Error Message Format
 For all validation errors, provide:
@@ -167,3 +167,5 @@ dedupe --verbose --log-file changes.log leads.json
 - Handles errors gracefully with informative messages
 - Maintains data integrity and prevents data loss
 - Provides clear user feedback and progress indicators
+- Resolves all conflicts (including cross-conflicts) by preferring newest dates
+- Logs detailed information about all conflicts that were resolved

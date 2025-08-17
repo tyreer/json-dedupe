@@ -82,8 +82,8 @@ Build a command-line JSON deduplication tool that processes lead records accordi
 
 ### Step 2.2.1: Cross-Conflict Detection
 - Detect records with both ID and email conflicts
-- Implement error handling for cross-conflicts
-- Create detailed error reporting for these scenarios
+- Implement resolution logic for cross-conflicts by preferring newest dates
+- Create detailed logging for cross-conflict resolution scenarios
 
 ### Step 2.2.2: Record Merging Logic
 - Implement field-by-field comparison
@@ -275,7 +275,7 @@ Implement the core deduplication engine for the JSON tool:
 2. Implement conflict detection logic:
    - Build indexes for _id and email lookups
    - Detect cross-conflicts (same record has both ID and email conflicts with different records)
-   - Exit with error for cross-conflicts to prevent data loss
+   - Resolve cross-conflicts by preferring newest dates (not exit with error)
 
 3. Create record comparison and merging:
    - Compare records field by field
@@ -286,12 +286,12 @@ Implement the core deduplication engine for the JSON tool:
 4. Add comprehensive tests in tests/test_engine.py:
    - Test duplicate detection scenarios
    - Test date-based resolution
-   - Test cross-conflict detection
+   - Test cross-conflict detection and resolution
    - Test edge cases with identical dates
    - Test field comparison and merging
 
 5. Create a conflict resolution strategy that:
-   - Prioritizes newest date
+   - Prioritizes newest date for all conflicts (including cross-conflicts)
    - Handles identical dates by preferring last record
    - Maintains idempotence (running twice produces same result)
    - Preserves all original data without mutation
@@ -419,7 +419,7 @@ Implement the complete command line interface for the deduplication tool:
 
 4. Implement exit codes:
    - 0: Success
-   - 1: Validation errors (missing fields, invalid dates, cross-conflicts)
+   - 1: Validation errors (missing fields, invalid dates)
    - 2: File I/O errors
    - 3: General errors (JSON parsing, memory, etc.)
 
@@ -533,6 +533,9 @@ Create a final demonstration using the leads.json file to show the complete func
 ---
 
 # Implementation Notes
+
+## Refactoring Note
+**Important**: During implementation, the approach to cross-conflicts was refactored to better align with the original assignment requirements. The initial specification suggested treating cross-conflicts as fatal errors, but the assignment clearly states "The data from the newest date should be preferred." Therefore, the final implementation resolves cross-conflicts by preferring the newest date rather than exiting with an error. This ensures the tool performs complete deduplication while maintaining data integrity and providing comprehensive logging of all resolved conflicts.
 
 ## Testing Strategy
 - **Unit Tests**: Test each component in isolation

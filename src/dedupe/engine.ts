@@ -123,19 +123,19 @@ export class DeduplicationEngine {
   }
 
   /**
-   * Detect cross-conflicts (same record has both ID and email conflicts with different records)
-   * @returns Array of cross-conflict information with detailed record information
+   * Detect all conflicts including cross-conflicts (records with both ID and email conflicts)
+   * @returns Array of all conflict information including cross-conflicts
    */
-  public detectCrossConflicts(): ConflictInfo[] {
-    const conflicts = this.detectConflicts();
-    const crossConflicts: ConflictInfo[] = [];
+  public detectAllConflicts(): ConflictInfo[] {
+    const idConflicts = this.detectConflicts();
+    const allConflicts: ConflictInfo[] = [...idConflicts];
 
-    // Group conflicts by record ID and email
+    // Group conflicts by record ID and email to identify cross-conflicts
     const recordConflicts = new Map<string, Set<string>>();
     const emailConflicts = new Map<string, Set<string>>();
 
     // Build conflict maps
-    conflicts.forEach(conflict => {
+    idConflicts.forEach(conflict => {
       conflict.records.forEach(record => {
         // Track ID conflicts
         if (!recordConflicts.has(record._id)) {
@@ -182,7 +182,7 @@ export class DeduplicationEngine {
         // Combine all related records for this cross-conflict
         const allRelatedRecords = new Set([...sameIdRecords, ...sameEmailRecords]);
         
-        crossConflicts.push({
+        allConflicts.push({
           type: 'cross_conflict',
           records: Array.from(allRelatedRecords),
           conflictingIds: [primaryRecord._id],
@@ -197,7 +197,16 @@ export class DeduplicationEngine {
       }
     }
 
-    return crossConflicts;
+    return allConflicts;
+  }
+
+  /**
+   * Detect cross-conflicts (same record has both ID and email conflicts with different records)
+   * @returns Array of cross-conflict information with detailed record information
+   * @deprecated Use detectAllConflicts() instead
+   */
+  public detectCrossConflicts(): ConflictInfo[] {
+    return this.detectAllConflicts().filter(conflict => conflict.type === 'cross_conflict');
   }
 
   /**
@@ -284,9 +293,8 @@ export class DeduplicationEngine {
    * @returns Deduplication result with unique records and conflict information
    */
   public deduplicate(): DeduplicationResult {
-    const conflicts = this.detectConflicts();
-    const crossConflicts = this.detectCrossConflicts();
-    const decisions = this.resolveConflicts(conflicts);
+    const allConflicts = this.detectAllConflicts();
+    const decisions = this.resolveConflicts(allConflicts);
 
     // Build set of records to keep
     const recordsToKeep = new Set<LeadRecord>();
@@ -307,9 +315,14 @@ export class DeduplicationEngine {
     // Convert to array and maintain original order
     const uniqueRecords = this.records.filter(record => recordsToKeep.has(record));
 
+    // Separate conflicts by type for reporting
+    const idConflicts = allConflicts.filter(c => c.type === 'id_conflict');
+    const emailConflicts = allConflicts.filter(c => c.type === 'email_conflict');
+    const crossConflicts = allConflicts.filter(c => c.type === 'cross_conflict');
+
     return {
       uniqueRecords,
-      conflicts,
+      conflicts: [...idConflicts, ...emailConflicts],
       crossConflicts,
       summary: {
         totalRecords: this.records.length,

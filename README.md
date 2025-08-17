@@ -6,8 +6,9 @@ A powerful command-line tool for deduplicating JSON records with comprehensive l
 
 - **Smart Deduplication**: Removes duplicate records based on ID and email fields
 - **Date-Based Resolution**: Prefers records with the newest date, with last-in-list tie-breaker
+- **Cross-Conflict Resolution**: Handles complex scenarios where records have both ID and email conflicts
 - **Comprehensive Validation**: Validates required fields, date formats, and data integrity
-- **Detailed Logging**: JSON log file with field-level change tracking
+- **Detailed Logging**: JSON log file with field-level change tracking and conflict resolution details
 - **Performance Optimization**: Memory management and batch processing for large datasets
 - **Flexible Input**: Support for multiple files, stdin, and various date formats
 - **Robust Error Handling**: Informative error messages with specific examples and counts
@@ -186,37 +187,40 @@ The log file contains detailed information about all changes made during dedupli
 ```json
 {
   "summary": {
-    "totalRecords": 10,
-    "uniqueRecords": 8,
-    "conflicts": 2,
-    "changes": 4
+    "totalConflicts": 6,
+    "idConflicts": 2,
+    "emailConflicts": 4,
+    "crossConflicts": 1,
+    "totalChanges": 25,
+    "timestamp": "2024-01-15T10:30:00Z"
   },
-  "changes": [
+  "entries": [
     {
-      "type": "merge",
-      "keptRecord": {
-        "_id": "id1",
-        "email": "user1@example.com"
-      },
-      "droppedRecord": {
-        "_id": "id2",
-        "email": "user1@example.com"
-      },
+      "timestamp": "2024-01-15T10:30:00.307Z",
+      "keptRecordId": "jkj238238jdsnfsj23",
+      "droppedRecordId": "jkj238238jdsnfsj23",
+      "conflictType": "id_conflict",
       "reason": "newer_date",
-      "fieldChanges": {
+      "changes": {
+        "keptEmail": "bill@bar.com",
+        "droppedEmail": "coo@bar.com",
+        "keptEntryDate": "2014-05-07T17:33:20+00:00",
+        "droppedEntryDate": "2014-05-07T17:32:20+00:00",
         "keptFirstName": "John",
-        "droppedFirstName": "Jane",
-        "keptLastName": "Doe",
-        "droppedLastName": "Smith"
+        "droppedFirstName": "Ted",
+        "keptLastName": "Smith",
+        "droppedLastName": "Jones",
+        "keptAddress": "888 Mayberry St",
+        "droppedAddress": "456 Neat St"
+      },
+      "metadata": {
+        "keptRecordEmail": "bill@bar.com",
+        "droppedRecordEmail": "coo@bar.com",
+        "keptRecordDate": "2014-05-07T17:33:20+00:00",
+        "droppedRecordDate": "2014-05-07T17:32:20+00:00"
       }
     }
-  ],
-  "metadata": {
-    "timestamp": "2024-01-15T10:30:00Z",
-    "version": "0.1.0",
-    "inputFiles": ["leads.json"],
-    "outputFile": "leads_deduplicated_20240115_103000.json"
-  }
+  ]
 }
 ```
 
@@ -234,7 +238,7 @@ When conflicts are detected, the tool resolves them using these rules:
 
 1. **Date Comparison**: Records with newer dates are preferred
 2. **Tie-Breaker**: If dates are identical, the last record in the input is preferred
-3. **Cross-Conflicts**: If a record conflicts by both ID and email with different records, an error is raised
+3. **Cross-Conflicts**: Records with both ID and email conflicts are resolved by preferring the newest date
 
 ### Field Merging
 
@@ -250,7 +254,7 @@ When merging records, the tool:
 - `0`: Success
 - `1`: Validation errors (missing fields, invalid dates, etc.)
 - `2`: I/O errors (file not found, permission denied, etc.)
-- `3`: General errors (cross-conflicts, processing errors, etc.)
+- `3`: General errors (processing errors, etc.)
 
 ### Error Messages
 
@@ -269,6 +273,16 @@ Error: Validation failed
 - Example invalid record: {"email": "test@example.com", "entryDate": "invalid-date"}
 
 Exit code: 1
+```
+
+### Example Success Output with Cross-Conflicts
+
+```
+✅ Successfully processed 10 records, removed 5 duplicates (50.0% reduction), output 5 unique records
+🔧 Resolved 3 conflicts with 6 field changes
+⚠️  Including 1 cross-conflicts resolved by preferring newest dates
+📄 Output written to: leads_deduplicated_2024-01-15T10-30-00.json
+📋 Change log written to: leads_deduplicated_2024-01-15T10-30-00_changes.log.json
 ```
 
 ## Performance Features
