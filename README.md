@@ -2,6 +2,8 @@
 
 A command-line tool for deduplicating JSON records with comprehensive logging, validation, and performance optimization. Built with TypeScript and Node.js.
 
+> **Development Note**: This tool was created following the prompt-driven development workflow described in [Harper Reed's LLM codegen workflow](https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/). The development process involved using Cursor IDE with LLM-assisted code generation, following a structured approach of specification creation, blueprint planning, and iterative implementation. The complete development artifacts including the specification, blueprint, and implementation checklist are available in the `prompt-driven-development/` folder.
+
 ## Features
 
 - **Deduplication**: Removes duplicate records based on ID and email fields
