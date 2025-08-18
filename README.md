@@ -13,6 +13,7 @@ A command-line tool for deduplicating JSON records with comprehensive logging, v
 - **Detailed Logging**: JSON log file with field-level change tracking and conflict resolution details
 - **Performance Optimization**: Memory management and batch processing for large datasets
 - **Flexible Input**: Support for multiple files, stdin, and various date formats
+- **Multi-Key Processing**: Process JSON files with multiple record arrays using the `--key-names` option
 - **Robust Error Handling**: Informative error messages with specific examples and counts
 
 ## Installation
@@ -79,6 +80,7 @@ Options:
   -o, --output <file>           Output file path (default: auto-generated)
   -l, --log-file <file>         Log file path (default: auto-generated)
   -t, --timestamp-key <key>     Date field name (default: "entryDate")
+  --key-names <keys>            Comma-separated list of keys to process (default: "leads")
   -v, --verbose                 Enable verbose output
   -q, --quiet                   Suppress all output except errors
   --dry-run                     Show what would be done without making changes
@@ -116,9 +118,24 @@ node dist/json-dedupe.js input.json --dry-run
 node dist/json-dedupe.js input.json --quiet
 ```
 
+#### Process Multiple Keys
+
+```bash
+# Process specific keys in a JSON file
+node dist/json-dedupe.js --key-names "leads,users" data.json
+
+# Process single custom key
+node dist/json-dedupe.js --key-names "customers" data.json
+
+# Process multiple keys with custom timestamp field
+node dist/json-dedupe.js --key-names "customers,prospects" --timestamp-key "createdAt" data.json
+```
+
 ## Input Format
 
-The tool expects JSON files with the following structure:
+The tool expects JSON files with the following structure. By default, it looks for a `leads` key, but you can specify different keys using the `--key-names` option.
+
+### Default Structure (leads key)
 
 ```json
 {
@@ -134,6 +151,42 @@ The tool expects JSON files with the following structure:
   ]
 }
 ```
+
+### Multiple Keys Structure
+
+```json
+{
+  "leads": [
+    {
+      "_id": "lead1",
+      "email": "lead1@example.com",
+      "entryDate": "2014-05-07T17:30:20+00:00",
+      "firstName": "John",
+      "lastName": "Doe"
+    }
+  ],
+  "users": [
+    {
+      "_id": "user1",
+      "email": "user1@example.com",
+      "entryDate": "2014-05-07T17:31:20+00:00",
+      "firstName": "Jane",
+      "lastName": "Smith"
+    }
+  ],
+  "customers": [
+    {
+      "_id": "customer1",
+      "email": "customer1@example.com",
+      "entryDate": "2014-05-07T17:32:20+00:00",
+      "firstName": "Bob",
+      "lastName": "Johnson"
+    }
+  ]
+}
+```
+
+When processing multiple keys, all records from the specified keys are combined and deduplicated together. The output will contain all deduplicated records in a single `leads` array.
 
 ### Required Fields
 

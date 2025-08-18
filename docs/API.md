@@ -30,8 +30,26 @@ clone(): LeadRecord
 Handles parsing of JSON files and content into LeadRecord objects.
 
 ```typescript
-parseFile(filePath: string): Promise<JsonData>
-parseContent(content: string): JsonData
+parseFile(filePath: string, keyNames?: string[]): Promise<JsonData>
+parseContent(content: string, keyNames?: string[]): JsonData
+parseStdin(keyNames?: string[]): JsonData
+```
+
+**Parameters:**
+- `filePath`: Path to the JSON file
+- `content`: JSON content as string
+- `keyNames`: Array of key names to process (default: `['leads']`)
+
+**Examples:**
+```typescript
+// Parse with default 'leads' key
+const data = await parser.parseFile('input.json');
+
+// Parse specific keys
+const data = await parser.parseFile('input.json', ['leads', 'users']);
+
+// Parse single custom key
+const data = await parser.parseFile('input.json', ['customers']);
 ```
 
 ### DeduplicationEngine
@@ -54,6 +72,14 @@ getLog(): ChangeLog
 ```
 
 ## Data Models
+
+### JsonData
+
+```typescript
+interface JsonData {
+  [key: string]: any;  // Flexible structure supporting multiple keys
+}
+```
 
 ### LeadRecordData
 
@@ -148,7 +174,12 @@ const parser = new JsonParser();
 const engine = new DeduplicationEngine();
 const logger = new ChangeLogger();
 
+// Parse with default 'leads' key
 const data = await parser.parseFile('input.json');
+data.records.forEach(record => engine.addRecord(record));
+
+// Or parse specific keys
+const data = await parser.parseFile('input.json', ['leads', 'users']);
 data.records.forEach(record => engine.addRecord(record));
 
 const result = engine.deduplicate();

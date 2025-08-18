@@ -14,6 +14,38 @@ npm run build
 node dist/json-dedupe.js input.json
 ```
 
+### Key Names Issues
+
+**Problem**: `JSON must contain a "missing_key" array`
+
+**Solution**:
+```bash
+# Check what keys are available in your JSON file
+cat input.json | jq 'keys'
+
+# Use correct key names
+node dist/json-dedupe.js input.json --key-names "leads,users"
+```
+
+**Problem**: `"users" field must be an array`
+
+**Solution**:
+```bash
+# Check the structure of your JSON
+cat input.json | jq '.users'
+
+# Ensure the key contains an array, not an object or string
+```
+
+**Problem**: `Duplicate key names are not allowed`
+
+**Solution**:
+```bash
+# Remove duplicate key names from the list
+node dist/json-dedupe.js input.json --key-names "leads,users"  # Correct
+node dist/json-dedupe.js input.json --key-names "leads,leads"  # Wrong
+```
+
 ### Permission Denied
 
 **Problem**: `EACCES: permission denied`
@@ -48,6 +80,18 @@ node dist/json-dedupe.js input.json --verbose
 ```bash
 # Use different timestamp key
 node dist/json-dedupe.js input.json --timestamp-key createdAt
+```
+
+**Key Names Validation Errors**:
+```bash
+# Check that specified keys exist in JSON
+node dist/json-dedupe.js input.json --key-names "leads,users" --verbose
+
+# Ensure keys contain arrays, not objects or strings
+node dist/json-dedupe.js input.json --key-names "leads" --verbose
+
+# Avoid duplicate key names
+node dist/json-dedupe.js input.json --key-names "leads,leads"  # This will fail
 ```
 
 ### Exit Code 2: I/O Errors
@@ -130,3 +174,6 @@ node dist/json-dedupe.js input.json --verbose
 | Slow processing | `--quiet` flag |
 | Date parsing issues | `--timestamp-key` option |
 | Validation errors | Check required fields and formats |
+| Missing key error | `--key-names "leads,users"` |
+| Key not array error | Check JSON structure with `jq` |
+| Duplicate keys error | Remove duplicate key names |
