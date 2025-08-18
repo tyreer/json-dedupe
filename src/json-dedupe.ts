@@ -183,6 +183,33 @@ For more information, visit: https://github.com/your-repo/json-dedupe
       };
     }
 
+    // Validate key names
+    if (this.config.keyNames.length === 0) {
+      return {
+        isValid: false,
+        error: 'At least one key name must be specified'
+      };
+    }
+
+    // Check for empty key names
+    for (const keyName of this.config.keyNames) {
+      if (!keyName || keyName.trim() === '') {
+        return {
+          isValid: false,
+          error: 'Key names cannot be empty'
+        };
+      }
+    }
+
+    // Check for duplicate key names
+    const uniqueKeys = new Set(this.config.keyNames);
+    if (uniqueKeys.size !== this.config.keyNames.length) {
+      return {
+        isValid: false,
+        error: 'Duplicate key names are not allowed'
+      };
+    }
+
     // Validate timestamp key
     if (!this.config.timestampKey || this.config.timestampKey.trim() === '') {
       return {
@@ -243,6 +270,7 @@ For more information, visit: https://github.com/your-repo/json-dedupe
     console.log(chalk.gray('  Output file:'), this.config.outputFile || '(auto-generated)');
     console.log(chalk.gray('  Log file:'), this.config.logFile || '(auto-generated)');
     console.log(chalk.gray('  Timestamp key:'), this.config.timestampKey);
+    console.log(chalk.gray('  Key names:'), this.config.keyNames.join(', '));
     console.log(chalk.gray('  Verbose:'), this.config.verbose);
     console.log(chalk.gray('  Quiet:'), this.config.quiet);
     console.log(chalk.gray('  Dry run:'), this.config.dryRun);
@@ -266,6 +294,7 @@ For more information, visit: https://github.com/your-repo/json-dedupe
     console.log(`  Output file: ${this.config.outputFile || '(auto-generated)'}`);
     console.log(`  Log file: ${this.config.logFile || '(auto-generated)'}`);
     console.log(`  Timestamp key: ${this.config.timestampKey}`);
+    console.log(`  Key names: ${this.config.keyNames.join(', ')}`);
 
     console.log(chalk.blue('\nProcessing options:'));
     console.log(`  Verbose output: ${this.config.verbose ? 'Yes' : 'No'}`);
