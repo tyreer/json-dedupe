@@ -146,7 +146,7 @@ export class Processor {
 
         if (inputFile === '-') {
           // Read from stdin
-          records = JsonParser.parseStdin();
+          records = JsonParser.parseStdin(this.config.keyNames);
         } else {
           // Read from file
           if (!fs.existsSync(inputFile)) {
@@ -156,7 +156,7 @@ export class Processor {
               error: `Input file not found: ${inputFile}`
             };
           }
-          records = JsonParser.parseFile(inputFile);
+          records = JsonParser.parseFile(inputFile, this.config.keyNames);
         }
 
         allRecords.push(...records);
