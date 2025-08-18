@@ -65,6 +65,7 @@ export class Cli {
       .option('-o, --output <file>', 'Output file (default: input_deduplicated_timestamp.json)')
       .option('-l, --log-file <file>', 'Log file (default: output_changes.log.json)')
       .option('-t, --timestamp-key <key>', 'Timestamp field name (default: entryDate)', 'entryDate')
+      .option('--key-names <keys>', 'Comma-separated list of keys to process (default: leads)', 'leads')
       .option('-v, --verbose', 'Verbose output')
       .option('-q, --quiet', 'Quiet mode (minimal output)')
       .option('--dry-run', 'Show what would be done without making changes')
@@ -83,6 +84,8 @@ Examples:
   $ cat leads.json | json-dedupe -
   $ json-dedupe -t createdAt data.json
   $ json-dedupe -l changes.log.json -o deduplicated.json leads.json
+  $ json-dedupe --key-names "leads,users" data.json
+  $ json-dedupe --key-names "customers,prospects" --timestamp-key "createdAt" data.json
 
 Exit Codes:
   0  Success
@@ -98,11 +101,17 @@ For more information, visit: https://github.com/your-repo/json-dedupe
    * Parse command line arguments
    */
   private parseArguments(inputFiles: string[], options: any): void {
+    // Parse key names from comma-separated string
+    const keyNames = options['key-names'] 
+      ? options['key-names'].split(',').map((k: string) => k.trim()).filter((k: string) => k.length > 0)
+      : ['leads'];
+
     this.config = {
       inputFiles: inputFiles || [],
       outputFile: options.output,
       logFile: options['log-file'],
       timestampKey: options['timestamp-key'] || 'entryDate',
+      keyNames: keyNames,
       verbose: options.verbose || false,
       quiet: options.quiet || false,
       dryRun: options['dry-run'] || false,
