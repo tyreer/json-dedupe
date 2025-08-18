@@ -1,0 +1,46 @@
+{
+  "leads": [
+    {
+      "_id": "lead1",
+      "email": "lead1@example.com",
+      "entryDate": "2014-05-07T17:35:20+00:00",
+      "firstName": "John",
+      "lastName": "Doe",
+      "address": "123 Main St"
+    },
+    {
+      "_id": "lead4",
+      "email": "lead4@example.com",
+      "entryDate": "2014-05-07T17:36:20+00:00",
+      "firstName": "David",
+      "lastName": "Miller",
+      "address": "987 Cedar Ln"
+    },
+    {
+      "_id": "lead5",
+      "email": "lead5@example.com",
+      "entryDate": "2014-05-07T17:37:20+00:00",
+      "firstName": "Eva",
+      "lastName": "Garcia",
+      "address": "555 Birch Rd"
+    }
+  ],
+  "customers": [
+    {
+      "_id": "customer1",
+      "email": "customer1@example.com",
+      "entryDate": "2014-05-07T17:38:20+00:00",
+      "firstName": "Frank",
+      "lastName": "Taylor",
+      "address": "777 Spruce Ave"
+    },
+    {
+      "_id": "customer2",
+      "email": "customer2@example.com",
+      "entryDate": "2014-05-07T17:39:20+00:00",
+      "firstName": "Grace",
+      "lastName": "Anderson",
+      "address": "888 Willow Way"
+    }
+  ]
+}

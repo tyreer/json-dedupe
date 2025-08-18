@@ -207,6 +207,61 @@ describe('JsonParser', () => {
     });
   });
 
+  describe('integration tests with fixture files', () => {
+    test('should parse multi-key fixture file', () => {
+      const fs = require('fs');
+      const path = require('path');
+      
+      const fixturePath = path.join(__dirname, 'fixtures', 'multi-key-data.json');
+      const content = fs.readFileSync(fixturePath, 'utf8');
+      
+      const records = JsonParser.parseContent(content, ['leads', 'users', 'customers']);
+      
+      expect(records).toHaveLength(5); // 2 leads + 2 users + 1 customer
+      expect(records.some(r => r._id === 'lead1')).toBe(true);
+      expect(records.some(r => r._id === 'user1')).toBe(true);
+      expect(records.some(r => r._id === 'customer1')).toBe(true);
+    });
+
+    test('should parse multi-file fixture files', () => {
+      const fs = require('fs');
+      const path = require('path');
+      
+      const fixture1Path = path.join(__dirname, 'fixtures', 'multi-file-data-1.json');
+      const fixture2Path = path.join(__dirname, 'fixtures', 'multi-file-data-2.json');
+      
+      const content1 = fs.readFileSync(fixture1Path, 'utf8');
+      const content2 = fs.readFileSync(fixture2Path, 'utf8');
+      
+      const records1 = JsonParser.parseContent(content1, ['leads', 'users']);
+      const records2 = JsonParser.parseContent(content2, ['leads', 'customers']);
+      
+      expect(records1).toHaveLength(5); // 3 leads + 2 users
+      expect(records2).toHaveLength(5); // 3 leads + 2 customers
+      
+      // Check for overlapping record (lead1 appears in both files)
+      const lead1Records = [...records1, ...records2].filter(r => r._id === 'lead1');
+      expect(lead1Records).toHaveLength(2);
+      
+      // Check dates are different for lead1
+      const dates = lead1Records.map(r => r.entryDate);
+      expect(dates[0]).not.toBe(dates[1]);
+    });
+
+    test('should handle missing keys gracefully', () => {
+      const fs = require('fs');
+      const path = require('path');
+      
+      const fixturePath = path.join(__dirname, 'fixtures', 'multi-key-data.json');
+      const content = fs.readFileSync(fixturePath, 'utf8');
+      
+      // Try to parse with a key that doesn't exist
+      expect(() => {
+        JsonParser.parseContent(content, ['leads', 'nonexistent']);
+      }).toThrow('JSON must contain a "nonexistent" array');
+    });
+  });
+
   describe('validateFile', () => {
     test('should return true for existing readable file', () => {
       // Create a temporary file for testing

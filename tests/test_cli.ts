@@ -488,4 +488,129 @@ describe('Cli', () => {
       });
     });
   });
+
+  describe('multi-file and multi-key CLI functionality', () => {
+    test('should handle multiple files with default leads key', () => {
+      const inputFiles = ['tests/fixtures/multi-file-data-1.json', 'tests/fixtures/multi-file-data-2.json'];
+      const options = {
+        output: 'output.json',
+        'log-file': 'log.json',
+        'timestamp-key': 'entryDate',
+        verbose: false,
+        quiet: false,
+        'dry-run': false,
+        help: false,
+        version: false
+      };
+
+      (cli as any).parseArguments(inputFiles, options);
+      const config = cli.getConfig();
+
+      expect(config.inputFiles).toEqual(['tests/fixtures/multi-file-data-1.json', 'tests/fixtures/multi-file-data-2.json']);
+      expect(config.keyNames).toEqual(['leads']); // Default key names
+      expect(config.outputFile).toBe('output.json');
+      expect(config.logFile).toBe('log.json');
+      expect(config.timestampKey).toBe('entryDate');
+    });
+
+    test('should handle multiple files with custom key names', () => {
+      const inputFiles = ['tests/fixtures/multi-file-data-1.json', 'tests/fixtures/multi-file-data-2.json'];
+      const options = {
+        output: 'output.json',
+        'log-file': 'log.json',
+        'timestamp-key': 'entryDate',
+        'key-names': 'leads,users,customers',
+        verbose: false,
+        quiet: false,
+        'dry-run': false,
+        help: false,
+        version: false
+      };
+
+      (cli as any).parseArguments(inputFiles, options);
+      const config = cli.getConfig();
+
+      expect(config.inputFiles).toEqual(['tests/fixtures/multi-file-data-1.json', 'tests/fixtures/multi-file-data-2.json']);
+      expect(config.keyNames).toEqual(['leads', 'users', 'customers']);
+      expect(config.outputFile).toBe('output.json');
+      expect(config.logFile).toBe('log.json');
+      expect(config.timestampKey).toBe('entryDate');
+    });
+
+    test('should handle single custom key name', () => {
+      const inputFiles = ['tests/fixtures/multi-file-data-1.json'];
+      const options = {
+        'key-names': 'users',
+        verbose: false,
+        quiet: false,
+        'dry-run': false,
+        help: false,
+        version: false
+      };
+
+      (cli as any).parseArguments(inputFiles, options);
+      const config = cli.getConfig();
+
+      expect(config.inputFiles).toEqual(['tests/fixtures/multi-file-data-1.json']);
+      expect(config.keyNames).toEqual(['users']);
+    });
+
+    test('should handle key names with spaces', () => {
+      const inputFiles = ['tests/fixtures/multi-file-data-1.json'];
+      const options = {
+        'key-names': ' leads , users , customers ',
+        verbose: false,
+        quiet: false,
+        'dry-run': false,
+        help: false,
+        version: false
+      };
+
+      (cli as any).parseArguments(inputFiles, options);
+      const config = cli.getConfig();
+
+      expect(config.keyNames).toEqual(['leads', 'users', 'customers']);
+    });
+
+    test('should validate multiple files configuration', () => {
+      const config: CliConfig = {
+        inputFiles: ['tests/fixtures/multi-file-data-1.json', 'tests/fixtures/multi-file-data-2.json'],
+        timestampKey: 'entryDate',
+        keyNames: ['leads', 'users'],
+        verbose: false,
+        quiet: false,
+        dryRun: false,
+        help: false,
+        version: false
+      };
+
+      (cli as any).config = config;
+      const result = (cli as any).validateConfig();
+
+      expect(result.isValid).toBe(true);
+    });
+
+    test('should show key names in dry run output', () => {
+      const config: CliConfig = {
+        inputFiles: ['tests/fixtures/multi-file-data-1.json', 'tests/fixtures/multi-file-data-2.json'],
+        outputFile: 'output.json',
+        logFile: 'log.json',
+        timestampKey: 'entryDate',
+        keyNames: ['leads', 'users', 'customers'],
+        verbose: false,
+        quiet: false,
+        dryRun: true,
+        help: false,
+        version: false
+      };
+
+      (cli as any).config = config;
+      const result = (cli as any).performDryRun();
+
+      expect(result.success).toBe(true);
+      expect(consoleOutput.some(output => output.includes('leads, users, customers'))).toBe(true);
+      expect(consoleOutput.some(output => output.includes('tests/fixtures/multi-file-data-1.json'))).toBe(true);
+      expect(consoleOutput.some(output => output.includes('tests/fixtures/multi-file-data-2.json'))).toBe(true);
+    });
+  });
 });
