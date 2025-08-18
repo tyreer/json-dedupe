@@ -87,7 +87,7 @@ describe('JsonParser', () => {
 
       expect(() => {
         JsonParser.parseContent(content);
-      }).toThrow('Record at index 1: must be an object');
+      }).toThrow('Record at index 1 in "leads": must be an object');
     });
 
     test('should throw error for record with missing required fields', () => {
@@ -100,9 +100,13 @@ describe('JsonParser', () => {
         ]
       });
 
-      expect(() => {
-        JsonParser.parseContent(content);
-      }).toThrow('Missing or empty email field');
+      const records = JsonParser.parseContent(content);
+      expect(records).toHaveLength(1);
+      
+      // The validation should fail when we validate the record
+      const validation = records[0]!.validate();
+      expect(validation.isValid).toBe(false);
+      expect(validation.errors).toContain('Missing or empty email field');
     });
   });
 

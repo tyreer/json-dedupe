@@ -43,6 +43,7 @@ describe('Processor', () => {
       outputFile: 'output.json',
       logFile: 'log.json',
       timestampKey: 'entryDate',
+      keyNames: ['leads'],
       verbose: false,
       quiet: false,
       dryRun: false,
