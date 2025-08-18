@@ -5,7 +5,7 @@ import { LeadRecord, LeadRecordData } from './models';
  * Interface for JSON data structure
  */
 export interface JsonData {
-  leads: LeadRecordData[];
+  [key: string]: any;
 }
 
 /**
@@ -15,13 +15,14 @@ export class JsonParser {
   /**
    * Parse a JSON file and convert to LeadRecord objects
    * @param filePath - Path to the JSON file
+   * @param keyNames - Array of key names to process (default: ['leads'])
    * @returns Array of LeadRecord objects
    * @throws Error if file cannot be read or JSON is malformed
    */
-  public static parseFile(filePath: string): LeadRecord[] {
+  public static parseFile(filePath: string, keyNames: string[] = ['leads']): LeadRecord[] {
     try {
       const fileContent = fs.readFileSync(filePath, 'utf8');
-      return this.parseContent(fileContent);
+      return this.parseContent(fileContent, keyNames);
     } catch (error) {
       if (error instanceof Error) {
         if ('code' in error) {
@@ -41,10 +42,11 @@ export class JsonParser {
   /**
    * Parse JSON content from stdin or string
    * @param content - JSON content as string
+   * @param keyNames - Array of key names to process (default: ['leads'])
    * @returns Array of LeadRecord objects
    * @throws Error if JSON is malformed or structure is invalid
    */
-  public static parseContent(content: string): LeadRecord[] {
+  public static parseContent(content: string, keyNames: string[] = ['leads']): LeadRecord[] {
     if (!content || content.trim() === '') {
       throw new Error('Empty or invalid JSON content');
     }
@@ -63,31 +65,38 @@ export class JsonParser {
       throw new Error('JSON content must be an object');
     }
 
-    if (!jsonData.leads) {
-      throw new Error('JSON must contain a "leads" array');
-    }
-
-    if (!Array.isArray(jsonData.leads)) {
-      throw new Error('"leads" field must be an array');
+    // Validate that all specified keys exist and are arrays
+    for (const keyName of keyNames) {
+      if (!jsonData[keyName]) {
+        throw new Error(`JSON must contain a "${keyName}" array`);
+      }
+      if (!Array.isArray(jsonData[keyName])) {
+        throw new Error(`"${keyName}" field must be an array`);
+      }
     }
 
     const records: LeadRecord[] = [];
     const errors: string[] = [];
 
-    jsonData.leads.forEach((recordData: LeadRecordData, index: number) => {
-      try {
-        if (!recordData || typeof recordData !== 'object') {
-          errors.push(`Record at index ${index}: must be an object`);
-          return;
-        }
+    // Process all specified keys
+    for (const keyName of keyNames) {
+      const keyRecords = jsonData[keyName] as LeadRecordData[];
+      
+      keyRecords.forEach((recordData: LeadRecordData, index: number) => {
+        try {
+          if (!recordData || typeof recordData !== 'object') {
+            errors.push(`Record at index ${index} in "${keyName}": must be an object`);
+            return;
+          }
 
-        const record = new LeadRecord(recordData);
-        records.push(record);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        errors.push(`Record at index ${index}: ${errorMessage}`);
-      }
-    });
+          const record = new LeadRecord(recordData);
+          records.push(record);
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          errors.push(`Record at index ${index} in "${keyName}": ${errorMessage}`);
+        }
+      });
+    }
 
     if (errors.length > 0) {
       throw new Error(`Failed to parse some records:\n${errors.join('\n')}`);
@@ -98,12 +107,13 @@ export class JsonParser {
 
   /**
    * Parse JSON from stdin
+   * @param keyNames - Array of key names to process (default: ['leads'])
    * @returns Array of LeadRecord objects
    * @throws Error if stdin is empty or JSON is malformed
    */
-  public static parseStdin(): LeadRecord[] {
+  public static parseStdin(keyNames: string[] = ['leads']): LeadRecord[] {
     const content = fs.readFileSync(0, 'utf8'); // Read from stdin
-    return this.parseContent(content);
+    return this.parseContent(content, keyNames);
   }
 
   /**
