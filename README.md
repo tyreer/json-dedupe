@@ -2,6 +2,8 @@
 
 A command-line tool for deduplicating JSON records with comprehensive logging, validation, and performance optimization. Built with TypeScript and Node.js.
 
+**Problem being solved**: You have one or more JSON files with records that have duplicate values for ID or email fields. You need a set of records with unique ID and email values. The tool resolves conflicts by preferring records with the newest date, with last-in-list tie-breaker for identical dates.
+
 > **Development Note**: This tool was created following the prompt-driven development workflow described in [Harper Reed's LLM codegen workflow](https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/). The development process involved using Cursor IDE with LLM-assisted code generation, following a structured approach of specification creation, blueprint planning, and iterative implementation. The complete development artifacts including the specification, blueprint, and implementation checklist are available in the `prompt-driven-development/` folder.
 
 ## Features
