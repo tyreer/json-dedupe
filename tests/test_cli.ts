@@ -45,6 +45,7 @@ describe('Cli', () => {
       
       expect(config.inputFiles).toEqual([]);
       expect(config.timestampKey).toBe('entryDate');
+      expect(config.keyNames).toEqual(['leads']);
       expect(config.verbose).toBe(false);
       expect(config.quiet).toBe(false);
       expect(config.dryRun).toBe(false);
@@ -76,6 +77,7 @@ describe('Cli', () => {
       const config: CliConfig = {
         inputFiles: [],
         timestampKey: 'entryDate',
+        keyNames: ['leads'],
         verbose: false,
         quiet: false,
         dryRun: false,
@@ -95,6 +97,7 @@ describe('Cli', () => {
       const config: CliConfig = {
         inputFiles: ['test.json'],
         timestampKey: '',
+        keyNames: ['leads'],
         verbose: false,
         quiet: false,
         dryRun: false,
@@ -102,6 +105,7 @@ describe('Cli', () => {
         version: false
       };
 
+      // Manually set config for testing
       (cli as any).config = config;
       const result = (cli as any).validateConfig();
 
@@ -109,10 +113,90 @@ describe('Cli', () => {
       expect(result.error).toContain('Timestamp key cannot be empty');
     });
 
+    test('should validate key names configuration', () => {
+      const config: CliConfig = {
+        inputFiles: ['test.json'],
+        timestampKey: 'entryDate',
+        keyNames: ['leads', 'users'],
+        verbose: false,
+        quiet: false,
+        dryRun: false,
+        help: false,
+        version: false
+      };
+
+      // Manually set config for testing
+      (cli as any).config = config;
+      const result = (cli as any).validateConfig();
+
+      expect(result.isValid).toBe(true);
+    });
+
+    test('should validate empty key names array', () => {
+      const config: CliConfig = {
+        inputFiles: ['test.json'],
+        timestampKey: 'entryDate',
+        keyNames: [],
+        verbose: false,
+        quiet: false,
+        dryRun: false,
+        help: false,
+        version: false
+      };
+
+      // Manually set config for testing
+      (cli as any).config = config;
+      const result = (cli as any).validateConfig();
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toContain('At least one key name must be specified');
+    });
+
+    test('should validate duplicate key names', () => {
+      const config: CliConfig = {
+        inputFiles: ['test.json'],
+        timestampKey: 'entryDate',
+        keyNames: ['leads', 'leads'],
+        verbose: false,
+        quiet: false,
+        dryRun: false,
+        help: false,
+        version: false
+      };
+
+      // Manually set config for testing
+      (cli as any).config = config;
+      const result = (cli as any).validateConfig();
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toContain('Duplicate key names are not allowed');
+    });
+
+    test('should validate empty key name in array', () => {
+      const config: CliConfig = {
+        inputFiles: ['test.json'],
+        timestampKey: 'entryDate',
+        keyNames: ['leads', ''],
+        verbose: false,
+        quiet: false,
+        dryRun: false,
+        help: false,
+        version: false
+      };
+
+      // Manually set config for testing
+      (cli as any).config = config;
+      const result = (cli as any).validateConfig();
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toContain('Key names cannot be empty');
+    });
+
     test('should validate conflicting verbose and quiet options', () => {
       const config: CliConfig = {
         inputFiles: ['test.json'],
         timestampKey: 'entryDate',
+        keyNames: ['leads'],
         verbose: true,
         quiet: true,
         dryRun: false,
@@ -131,6 +215,7 @@ describe('Cli', () => {
       const config: CliConfig = {
         inputFiles: ['../invalid.json'],
         timestampKey: 'entryDate',
+        keyNames: ['leads'],
         verbose: false,
         quiet: false,
         dryRun: false,
@@ -149,6 +234,7 @@ describe('Cli', () => {
       const config: CliConfig = {
         inputFiles: ['test.json'],
         timestampKey: 'entryDate',
+        keyNames: ['leads'],
         verbose: false,
         quiet: false,
         dryRun: false,
@@ -166,6 +252,7 @@ describe('Cli', () => {
       const config: CliConfig = {
         inputFiles: ['-'],
         timestampKey: 'entryDate',
+        keyNames: ['leads'],
         verbose: false,
         quiet: false,
         dryRun: false,

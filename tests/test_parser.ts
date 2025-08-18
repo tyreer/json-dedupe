@@ -100,14 +100,106 @@ describe('JsonParser', () => {
         ]
       });
 
-      // The parser should create LeadRecord objects, but validation happens later
-      const records = JsonParser.parseContent(content);
+      expect(() => {
+        JsonParser.parseContent(content);
+      }).toThrow('Missing or empty email field');
+    });
+  });
+
+  describe('parseContent with multiple keys', () => {
+    test('should parse multiple keys', () => {
+      const content = JSON.stringify({
+        leads: [
+          {
+            _id: 'lead1',
+            email: 'lead1@example.com',
+            entryDate: '2014-05-07T17:30:20+00:00'
+          }
+        ],
+        users: [
+          {
+            _id: 'user1',
+            email: 'user1@example.com',
+            entryDate: '2014-05-07T17:31:20+00:00'
+          }
+        ]
+      });
+
+      const records = JsonParser.parseContent(content, ['leads', 'users']);
+
+      expect(records).toHaveLength(2);
+      expect(records[0]?._id).toBe('lead1');
+      expect(records[1]?._id).toBe('user1');
+    });
+
+    test('should parse single custom key', () => {
+      const content = JSON.stringify({
+        users: [
+          {
+            _id: 'user1',
+            email: 'user1@example.com',
+            entryDate: '2014-05-07T17:31:20+00:00'
+          }
+        ]
+      });
+
+      const records = JsonParser.parseContent(content, ['users']);
+
       expect(records).toHaveLength(1);
-      
-      // The validation should fail when we validate the record
-      const validation = records[0]!.validate();
-      expect(validation.isValid).toBe(false);
-      expect(validation.errors).toContain('Missing or empty email field');
+      expect(records[0]?._id).toBe('user1');
+      expect(records[0]?.email).toBe('user1@example.com');
+    });
+
+    test('should throw error for missing key', () => {
+      const content = JSON.stringify({
+        leads: [
+          {
+            _id: 'lead1',
+            email: 'lead1@example.com',
+            entryDate: '2014-05-07T17:30:20+00:00'
+          }
+        ]
+      });
+
+      expect(() => {
+        JsonParser.parseContent(content, ['leads', 'missing_key']);
+      }).toThrow('JSON must contain a "missing_key" array');
+    });
+
+    test('should throw error for non-array key', () => {
+      const content = JSON.stringify({
+        leads: [
+          {
+            _id: 'lead1',
+            email: 'lead1@example.com',
+            entryDate: '2014-05-07T17:30:20+00:00'
+          }
+        ],
+        users: 'not an array'
+      });
+
+      expect(() => {
+        JsonParser.parseContent(content, ['leads', 'users']);
+      }).toThrow('"users" field must be an array');
+    });
+
+    test('should include key name in error messages', () => {
+      const content = JSON.stringify({
+        leads: [
+          {
+            _id: 'lead1',
+            email: 'lead1@example.com',
+            entryDate: '2014-05-07T17:30:20+00:00'
+          }
+        ],
+        users: [
+          'invalid record'
+        ]
+      });
+
+      expect(() => {
+        JsonParser.parseContent(content, ['leads', 'users']);
+      }).toThrow('Record at index 0 in "users": must be an object');
     });
   });
 

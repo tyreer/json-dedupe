@@ -1,0 +1,48 @@
+{
+  "leads": [
+    {
+      "_id": "lead1",
+      "email": "lead1@example.com",
+      "entryDate": "2014-05-07T17:30:20+00:00",
+      "firstName": "John",
+      "lastName": "Doe",
+      "address": "123 Main St"
+    },
+    {
+      "_id": "lead2",
+      "email": "lead2@example.com",
+      "entryDate": "2014-05-07T17:31:20+00:00",
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "address": "456 Oak Ave"
+    }
+  ],
+  "users": [
+    {
+      "_id": "user1",
+      "email": "user1@example.com",
+      "entryDate": "2014-05-07T17:32:20+00:00",
+      "firstName": "Bob",
+      "lastName": "Johnson",
+      "address": "789 Pine St"
+    },
+    {
+      "_id": "user2",
+      "email": "user2@example.com",
+      "entryDate": "2014-05-07T17:33:20+00:00",
+      "firstName": "Alice",
+      "lastName": "Brown",
+      "address": "321 Elm St"
+    }
+  ],
+  "customers": [
+    {
+      "_id": "customer1",
+      "email": "customer1@example.com",
+      "entryDate": "2014-05-07T17:34:20+00:00",
+      "firstName": "Charlie",
+      "lastName": "Wilson",
+      "address": "654 Maple Dr"
+    }
+  ]
+}
