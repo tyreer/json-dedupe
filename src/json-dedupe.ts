@@ -13,6 +13,7 @@ export interface CliConfig {
   outputFile?: string;
   logFile?: string;
   timestampKey: string;
+  keyNames: string[];
   verbose: boolean;
   quiet: boolean;
   dryRun: boolean;
@@ -42,6 +43,7 @@ export class Cli {
     this.config = {
       inputFiles: [],
       timestampKey: 'entryDate',
+      keyNames: ['leads'],
       verbose: false,
       quiet: false,
       dryRun: false,
